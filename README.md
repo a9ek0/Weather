@@ -29,7 +29,7 @@ This is a basic REST API application built using [Spring Boot](https://spring.io
 - [Spring Boot](https://spring.io/projects/spring-boot): Web framework for building the REST API.
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa): Data access framework for interacting with the database.
 - [H2 Database](https://www.h2database.com/): Embedded database for local development.
-- [OpenWeatherMap API](https://openweathermap.org/api): External API for weather data.
+- [Weatherbit API](https://www.weatherbit.io/): External API for weather data.
 
 ## Getting Started
 
@@ -37,8 +37,8 @@ This is a basic REST API application built using [Spring Boot](https://spring.io
 
 Make sure you have the following installed:
 
-- [Java](https://www.oracle.com/java/technologies/javase-downloads.html) (version 8 or higher)
-- [Maven](https://maven.apache.org/download.cgi)
+- Java (version 17 or higher)
+- Gradle
 
 ### Installation
 
@@ -46,7 +46,6 @@ Make sure you have the following installed:
 
     ```bash
     git clone https://github.com/a9ek0/Weather
-    cd weather-api
     ```
 
 2. Build the project:
@@ -82,7 +81,7 @@ The application will start on `http://localhost:8080`.
 
 ### Configuration
 
-The application uses the [OpenWeatherMap API](https://openweathermap.org/api) to fetch weather data. You need to obtain an API key from OpenWeatherMap and configure it in the `application.properties` file.
+The application uses the [Weatherbit API](https://www.weatherbit.io/) to fetch weather data. You need to obtain an API key from OpenWeatherMap and configure it in the `application.properties` file.
 
 ```properties
 # application.properties
