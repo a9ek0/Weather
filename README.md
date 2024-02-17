@@ -86,11 +86,11 @@ The application uses the [Weatherbit API](https://www.weatherbit.io/) to fetch w
 ```properties
 # application.properties
 
-# OpenWeatherMap API Key
-openweathermap.api-key=your-api-key
+# Weatherbit API Key
+weatherbit.api-key=your-api-key
 ```
 
-Replace `your-api-key` with your actual OpenWeatherMap API key.
+Replace `your-api-key` with your actual Weatherbit API key.
 
 ## Contributing
 
