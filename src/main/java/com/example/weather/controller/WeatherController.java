@@ -6,6 +6,7 @@ import com.example.weather.service.WeatherService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -14,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/weather")
 public class WeatherController {
 
-    String apiKey = "30b0a44103ab493cbfd020a0675e5153";
+    @Value("${weatherbit.api-key}")
+    private String apiKey;
+
 
     @Autowired
     private WeatherService weatherService;

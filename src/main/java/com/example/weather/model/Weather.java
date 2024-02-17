@@ -6,19 +6,13 @@ public class Weather {
     private Long id;
     private String description;
 
-    public String getCity_name() {
-        return city_name;
-    }
-
-    public void setCity_name(String city_name) {
-        this.city_name = city_name;
-    }
-
-    private String city_name;
+    private String cityName;
 
     private String datetime;
+
     private double temp;
     private double rh;
+
     public static Weather toModel(WeatherEntity weatherEntity) {
         Weather model = new Weather();
 
@@ -26,13 +20,31 @@ public class Weather {
         model.setTemp(weatherEntity.getTemp());
         model.setDescription(weatherEntity.getDescription());
         model.setRh(weatherEntity.getRh());
-        model.setCity_name(weatherEntity.getCity_name());
+        model.setCityName(weatherEntity.getCityName());
         model.setDatetime(weatherEntity.getDatetime());
 
         return model;
     }
 
+    /**
+     * Empty constructor for the Weather class.
+     *
+     * <p>
+     * This constructor is provided to meet the requirements of frameworks
+     * like Spring, which may rely on a default constructor for certain operations.
+     * It is intentionally left empty as the initialization logic is not needed.
+     * </p>
+     */
     public Weather() {
+        // No initialization logic needed for this constructor
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public String getDatetime() {

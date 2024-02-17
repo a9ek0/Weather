@@ -13,7 +13,7 @@ public class WeatherEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String description;
-    private String city_name;
+    private String cityName;
     private String datetime;
     private double temp;
     private double rh;
@@ -23,18 +23,18 @@ public class WeatherEntity {
 
     public WeatherEntity(JsonNode jsonNode) {
         this.description = jsonNode.get("weather").get("description").asText();
-        this.city_name = jsonNode.get("city_name").asText();
+        this.cityName = jsonNode.get("city_name").asText();
         this.datetime = jsonNode.get("datetime").asText();
         this.temp = jsonNode.get("temp").asDouble();
         this.rh = jsonNode.get("rh").asDouble();
     }
 
-    public String getCity_name() {
-        return city_name;
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setCity_name(String city_name) {
-        this.city_name = city_name;
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public String getDatetime() {
