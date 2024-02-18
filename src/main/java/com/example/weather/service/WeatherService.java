@@ -47,7 +47,7 @@ public class WeatherService {
 
         return weatherList.stream()
                 .map(Weather::toModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Long delete(Long id) {
