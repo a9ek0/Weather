@@ -1,11 +1,11 @@
 package com.example.weather.controller;
 
 import com.example.weather.entity.WeatherEntity;
+import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.model.Weather;
 import com.example.weather.service.WeatherService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +19,14 @@ public class WeatherController {
     private String apiKey;
 
 
-    @Autowired
-    private WeatherService weatherService;
+    private final WeatherService weatherService;
+
+    public WeatherController(WeatherService weatherService) {
+        this.weatherService = weatherService;
+    }
 
     @PostMapping
-    public ResponseEntity weatherResponse(@RequestBody WeatherEntity weather){
+    public ResponseEntity<String> weatherResponse(@RequestBody WeatherEntity weather){
         try {
             weatherService.weatherResponse(weather);
             return ResponseEntity.ok("Weather was saved successfully!");
@@ -32,8 +35,19 @@ public class WeatherController {
         }
     }
 
+    @GetMapping("/db/{city}")
+    public ResponseEntity getWeatherDB(@PathVariable String city) {
+        try {
+            return ResponseEntity.ok(weatherService.getWeather(city));
+        } catch (CityNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error occurred!");
+        }
+    }
+
     @GetMapping("/city")
-    public ResponseEntity getWeather(@RequestParam String city) {
+    public ResponseEntity<Weather> getWeather(@RequestParam String city) {
         try {
             String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + city;
 
@@ -58,7 +72,7 @@ public class WeatherController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteWeather(@PathVariable Long id) {
+    public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
         try {
             weatherService.delete(id);
             return ResponseEntity.ok("Deleted successfully!");

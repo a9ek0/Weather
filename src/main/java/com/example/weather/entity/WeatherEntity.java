@@ -24,7 +24,7 @@ public class WeatherEntity {
     public WeatherEntity(JsonNode jsonNode) {
         this.description = jsonNode.get("weather").get("description").asText();
         this.cityName = jsonNode.get("city_name").asText();
-        this.datetime = jsonNode.get("datetime").asText();
+        this.datetime = jsonNode.get("ob_time").asText();
         this.temp = jsonNode.get("temp").asDouble();
         this.rh = jsonNode.get("rh").asDouble();
     }

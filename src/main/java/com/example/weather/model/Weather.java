@@ -3,20 +3,15 @@ package com.example.weather.model;
 import com.example.weather.entity.WeatherEntity;
 
 public class Weather {
-    private Long id;
-    private String description;
-
     private String cityName;
-
     private String datetime;
-
+    private String description;
     private double temp;
     private double rh;
 
     public static Weather toModel(WeatherEntity weatherEntity) {
         Weather model = new Weather();
 
-        model.setId(weatherEntity.getId());
         model.setTemp(weatherEntity.getTemp());
         model.setDescription(weatherEntity.getDescription());
         model.setRh(weatherEntity.getRh());
@@ -53,14 +48,6 @@ public class Weather {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getDescription() {
