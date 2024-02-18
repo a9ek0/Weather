@@ -81,7 +81,7 @@ The application will start on `http://localhost:8080`.
 
 ### Configuration
 
-The application uses the [Weatherbit API](https://www.weatherbit.io/) to fetch weather data. You need to obtain an API key from OpenWeatherMap and configure it in the `application.properties` file.
+The application uses the [Weatherbit API](https://www.weatherbit.io/) to fetch weather data. You need to obtain an API key from Weatherbit and configure it in the `application.properties` file.
 
 ```properties
 # application.properties
