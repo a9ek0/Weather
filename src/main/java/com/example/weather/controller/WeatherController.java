@@ -1,11 +1,15 @@
 package com.example.weather.controller;
 
-import com.example.weather.entity.WeatherEntity;
+import com.example.weather.entity.Weather;
+import com.example.weather.entity.WeatherHistory;
 import com.example.weather.exception.CityNotFoundException;
-import com.example.weather.model.Weather;
+import com.example.weather.dto.WeatherDTO;
+import com.example.weather.service.WeatherHistoryService;
 import com.example.weather.service.WeatherService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +23,9 @@ public class WeatherController {
     private String apiKey;
 
 
+    @Autowired
+    private WeatherHistoryService weatherHistoryService;
+
     private final WeatherService weatherService;
 
     public WeatherController(WeatherService weatherService) {
@@ -26,7 +33,7 @@ public class WeatherController {
     }
 
     @PostMapping
-    public ResponseEntity<String> weatherResponse(@RequestBody WeatherEntity weather){
+    public ResponseEntity<String> weatherResponse(@RequestBody Weather weather) {
         try {
             weatherService.weatherResponse(weather);
             return ResponseEntity.ok("Weather was saved successfully!");
@@ -47,24 +54,26 @@ public class WeatherController {
     }
 
     @GetMapping("/city")
-    public ResponseEntity<Weather> getWeather(@RequestParam String city) {
+    public ResponseEntity<WeatherDTO> getWeather(@RequestParam String city) {
         try {
             String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + city;
 
-            RestTemplate restTemplate = new RestTemplate();
+            Weather weatherEntity = weatherService.processApiUrl(apiUrl);
 
-            String jsonString = restTemplate.getForObject(apiUrl, String.class);
+            Weather tmpWeather = weatherService.findWeather(weatherEntity.getCityName());
+            if (tmpWeather != null) {
+                weatherHistoryService.createWeatherHistory(new WeatherHistory(), tmpWeather, city);
 
-            ObjectMapper objectMapper = new ObjectMapper();
+                weatherEntity.setId(tmpWeather.getId());
+                weatherEntity.setWeatherHistoryList(tmpWeather.getWeatherHistoryList());
 
-            JsonNode jsonNode = objectMapper.readTree(jsonString);
-            JsonNode dataNode = jsonNode.get("data").get(0);
+                weatherService.weatherResponse(weatherEntity);
+                return ResponseEntity.ok(WeatherDTO.toModel(weatherEntity));
+            } else {
+                weatherService.weatherResponse(weatherEntity);
+                return ResponseEntity.ok(WeatherDTO.toModel(weatherEntity));
+            }
 
-            WeatherEntity weatherEntity = new WeatherEntity(dataNode);
-
-            weatherService.weatherResponse(weatherEntity);
-
-            return ResponseEntity.ok(Weather.toModel(weatherEntity));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,48 +1,33 @@
 package com.example.weather.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class WeatherEntity {
+public class WeatherHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    Long id;
     private String description;
-    private String cityName;
+    private String countryCode;
     private String datetime;
     private double temp;
     private double rh;
 
-    public WeatherEntity() {
+    @ManyToOne
+    @JoinColumn(name = "weatherId")
+    private Weather weather;
+
+    public WeatherHistory() {
     }
 
-    public WeatherEntity(JsonNode jsonNode) {
+    public WeatherHistory(JsonNode jsonNode) {
         this.description = jsonNode.get("weather").get("description").asText();
-        this.cityName = jsonNode.get("city_name").asText();
+        this.countryCode = jsonNode.get("country_code").asText();
         this.datetime = jsonNode.get("ob_time").asText();
         this.temp = jsonNode.get("temp").asDouble();
         this.rh = jsonNode.get("rh").asDouble();
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public String getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
     }
 
     public Long getId() {
@@ -61,6 +46,14 @@ public class WeatherEntity {
         this.description = description;
     }
 
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
     public double getTemp() {
         return temp;
     }
@@ -75,5 +68,21 @@ public class WeatherEntity {
 
     public void setRh(double rh) {
         this.rh = rh;
+    }
+
+    public Weather getWeather() {
+        return weather;
+    }
+
+    public void setWeather(Weather weather) {
+        this.weather = weather;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }
