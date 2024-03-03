@@ -89,4 +89,14 @@ public class WeatherController {
             return ResponseEntity.badRequest().body("Error occurred!");
         }
     }
+
+    @PutMapping("/update/id/")
+    public ResponseEntity<String> updateWeather(@RequestParam Long id, @RequestBody Weather weather){
+        try {
+            weatherService.complete(id, weather);
+            return ResponseEntity.ok("Updated successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error occurred!");
+        }
+    }
 }

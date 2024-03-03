@@ -1,6 +1,8 @@
 package com.example.weather.service;
 
+import com.example.weather.dto.UserBasicDTO;
 import com.example.weather.dto.UserDTO;
+import com.example.weather.dto.WeatherDTO;
 import com.example.weather.entity.User;
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.UserNotFoundException;
@@ -37,11 +39,26 @@ public class UserService {
     }
 
     public User findUserById(Long userId) {
-        if(userId != null)
+        if (userId != null)
             return userRepo.findById(userId).get();
         return null;
     }
 
+    public Long delete(Long id) {
+        userRepo.deleteById(id);
+        return id;
+    }
 
+    public UserBasicDTO complete(Long id, User updatedUser) {
+        User user = userRepo.findById(id).get();
+
+        user.setCountryCode(updatedUser.getCountryCode());
+        user.setEmail(updatedUser.getEmail());
+        user.setName(updatedUser.getName());
+        if(!updatedUser.getWeatherList().isEmpty())
+            user.setWeatherList(updatedUser.getWeatherList());
+
+        return UserBasicDTO.toModel(userRepo.save(user));
+    }
 
 }

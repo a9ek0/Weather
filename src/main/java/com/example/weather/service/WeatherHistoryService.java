@@ -1,12 +1,16 @@
 package com.example.weather.service;
 
+import com.example.weather.dto.WeatherDTO;
 import com.example.weather.dto.WeatherHistoryDTO;
 import com.example.weather.entity.Weather;
 import com.example.weather.entity.WeatherHistory;
+import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.repository.WeatherHistoryRepo;
 import com.example.weather.repository.WeatherRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class WeatherHistoryService {
@@ -49,5 +53,20 @@ public class WeatherHistoryService {
         weatherHistory.setDescription(description);
 
         return WeatherHistoryDTO.toModel(weatherHistoryRepo.save(weatherHistory));
+    }
+
+    public Long delete(Long id) {
+        weatherHistoryRepo.deleteById(id);
+        return id;
+    }
+
+    public List<WeatherHistoryDTO> getWeather(String city) throws CityNotFoundException {
+        Weather weather = weatherRepo.findByCityName(city);
+
+        if (weather == null) {
+            throw new CityNotFoundException("City not found!");
+        }
+
+        return weather.getWeatherHistoryList().stream().map(WeatherHistoryDTO::toModel).toList();
     }
 }

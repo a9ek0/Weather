@@ -62,5 +62,25 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
+        try {
+            userService.delete(id);
+            return ResponseEntity.ok("Deleted successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error occurred!");
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateWeather(@PathVariable Long id, @RequestBody User user){
+        try {
+            userService.complete(id, user);
+            return ResponseEntity.ok("Updated successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error occurred!");
+        }
+    }
+
 
 }

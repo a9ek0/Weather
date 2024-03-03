@@ -88,4 +88,19 @@ public class WeatherService {
     public List<Weather> getWeatherByCountryCode(String countryCode) {
         return weatherRepo.findByCountryCode(countryCode);
     }
+
+    public WeatherDTO complete(Long id, Weather updatedWeather) {
+        Weather weather = weatherRepo.findById(id).get();
+
+        weather.setCountryCode(updatedWeather.getCountryCode());
+        weather.setTemp(updatedWeather.getTemp());
+        weather.setRh(updatedWeather.getRh());
+        weather.setDateTime(updatedWeather.getDateTime());
+        weather.setDescription(updatedWeather.getDescription());
+        weather.setCityName(updatedWeather.getCityName());
+        weather.setWeatherHistoryList(updatedWeather.getWeatherHistoryList());
+        weather.setUserList(updatedWeather.getUserList());
+
+        return WeatherDTO.toModel(weatherRepo.save(weather));
+    }
 }

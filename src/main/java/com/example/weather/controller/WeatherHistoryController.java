@@ -1,6 +1,7 @@
 package com.example.weather.controller;
 
 import com.example.weather.entity.WeatherHistory;
+import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.service.WeatherHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,4 +37,24 @@ public class WeatherHistoryController {
         }
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
+        try {
+            weatherHistoryService.delete(id);
+            return ResponseEntity.ok("Deleted successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error occurred!");
+        }
+    }
+
+    @GetMapping("/city/")
+    public ResponseEntity getWeather(@RequestParam String city) {
+        try {
+            return ResponseEntity.ok(weatherHistoryService.getWeather(city));
+        } catch (CityNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error occurred!");
+        }
+    }
 }
