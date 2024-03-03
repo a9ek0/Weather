@@ -2,7 +2,6 @@ package com.example.weather.controller;
 
 import com.example.weather.entity.User;
 import com.example.weather.entity.Weather;
-import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.service.UserService;
 import com.example.weather.service.WeatherService;
@@ -15,12 +14,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/weather/user")
 public class UserController {
+    private static final String ERROR_MESSAGE = "Error occurred!";
+    private final UserService userService;
+    private final WeatherService weatherService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private WeatherService weatherService;
+    public UserController(UserService userService, WeatherService weatherService) {
+        this.userService = userService;
+        this.weatherService = weatherService;
+    }
 
     @PostMapping
     public ResponseEntity<String> userResponse(@RequestBody User user) {
@@ -58,7 +59,7 @@ public class UserController {
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred!");
+            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
         }
     }
 
@@ -68,7 +69,7 @@ public class UserController {
             userService.delete(id);
             return ResponseEntity.ok("Deleted successfully!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred!");
+            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
         }
     }
 
@@ -78,7 +79,7 @@ public class UserController {
             userService.complete(id, user);
             return ResponseEntity.ok("Updated successfully!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred!");
+            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
         }
     }
 

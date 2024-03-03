@@ -17,8 +17,7 @@ public class WeatherController {
 
     @Value("${weatherbit.api-key}")
     private String apiKey;
-
-
+    private static final String ERROR_MESSAGE = "Error occurred!";
     private final WeatherHistoryService weatherHistoryService;
 
     private final WeatherService weatherService;
@@ -45,7 +44,7 @@ public class WeatherController {
         } catch (CityNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred!");
+            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
         }
     }
 
@@ -86,7 +85,7 @@ public class WeatherController {
             weatherService.delete(id);
             return ResponseEntity.ok("Deleted successfully!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred!");
+            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
         }
     }
 
@@ -96,7 +95,7 @@ public class WeatherController {
             weatherService.complete(id, weather);
             return ResponseEntity.ok("Updated successfully!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred!");
+            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
         }
     }
 }
