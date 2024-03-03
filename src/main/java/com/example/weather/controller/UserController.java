@@ -38,12 +38,8 @@ public class UserController {
             List<Weather> weathers = weatherService.getWeatherByCountryCode(user.getCountryCode());
 
             for (Weather weather : weathers) {
-                if (!user.getWeatherList().contains(weather)) {
-                    user.getWeatherList().add(weather);
-                }
-
                 if (!weather.getUserList().contains(user)) {
-                //    weather.getUserList().add(user);
+                    weather.getUserList().add(user);
                 }
                 weatherService.weatherResponse(weather);
             }

@@ -1,7 +1,10 @@
 package com.example.weather.service;
 
+import com.example.weather.entity.User;
 import com.example.weather.entity.Weather;
+import com.example.weather.entity.WeatherHistory;
 import com.example.weather.exception.CityNotFoundException;
+import com.example.weather.exception.JsonReadingException;
 import com.example.weather.exception.WeatherNotFoundException;
 import com.example.weather.dto.WeatherDTO;
 import com.example.weather.repository.WeatherRepo;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WeatherService {
@@ -50,9 +54,28 @@ public class WeatherService {
         return WeatherDTO.toModel(weather);
     }
 
+    public void updateWeather(Weather weather, List<WeatherHistory> weatherHistoryList,
+                              List<User> userList,Optional<String> description,
+                              Optional<String> cityName, Optional<String> dateTime,
+                              Optional<String> countryCode, Optional<Double> temp, Optional<Double> rh) {
+        description.ifPresent(weather::setDescription);
+        cityName.ifPresent(weather::setCityName);
+        dateTime.ifPresent(weather::setDatetime);
+        countryCode.ifPresent(weather::setCountryCode);
+        temp.ifPresent(weather::setTemp);
+        rh.ifPresent(weather::setRh);
+
+        if (weatherHistoryList != null) {
+            weather.setWeatherHistoryList(weatherHistoryList);
+        }
+        if (userList != null) {
+            weather.setUserList(userList);
+        }
+
+    }
+
     public Weather findWeather(String city) {
-        Weather weather = weatherRepo.findByCityName(city);
-        return weather;
+        return weatherRepo.findByCityName(city);
     }
 
     public Long delete(Long id) {
@@ -69,18 +92,16 @@ public class WeatherService {
         }
     }
 
-    public Weather processApiUrl(String apiUrl) {
+    public Weather processApiUrl(String apiUrl) throws JsonReadingException {
         RestTemplate restTemplate = new RestTemplate();
 
         String jsonString = restTemplate.getForObject(apiUrl, String.class);
-
-        ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode jsonNode = null;
         try {
             jsonNode = objectMapper.readTree(jsonString);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new JsonReadingException("Json reading error!");
         }
         JsonNode dataNode = jsonNode.get("data").get(0);
 

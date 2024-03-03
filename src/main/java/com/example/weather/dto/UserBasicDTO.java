@@ -2,9 +2,6 @@ package com.example.weather.dto;
 
 import com.example.weather.entity.User;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserBasicDTO {
     private String countryCode;
     private String name;
@@ -20,6 +17,7 @@ public class UserBasicDTO {
     }
 
     public UserBasicDTO() {
+        // No initialization logic needed for this constructor
     }
 
     public String getCountryCode() {

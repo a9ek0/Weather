@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/weather")
 public class WeatherController {
@@ -64,11 +66,14 @@ public class WeatherController {
             if (tmpWeather != null) {
                 weatherHistoryService.createWeatherHistory(new WeatherHistory(), tmpWeather, city);
 
-                weatherEntity.setId(tmpWeather.getId());
-                weatherEntity.setWeatherHistoryList(tmpWeather.getWeatherHistoryList());
 
-                weatherService.weatherResponse(weatherEntity);
-                return ResponseEntity.ok(WeatherDTO.toModel(weatherEntity));
+                weatherService.updateWeather(tmpWeather, null, null,
+                        Optional.ofNullable(weatherEntity.getDescription()), Optional.ofNullable(weatherEntity.getCityName()),
+                        Optional.ofNullable(weatherEntity.getDatetime()), Optional.ofNullable(weatherEntity.getCountryCode()),
+                        Optional.of(weatherEntity.getTemp()), Optional.of(weatherEntity.getRh()));
+
+                weatherService.weatherResponse(tmpWeather);
+                return ResponseEntity.ok(WeatherDTO.toModel(tmpWeather));
             } else {
                 weatherService.weatherResponse(weatherEntity);
                 return ResponseEntity.ok(WeatherDTO.toModel(weatherEntity));

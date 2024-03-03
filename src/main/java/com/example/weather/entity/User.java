@@ -23,6 +23,7 @@ public class User {
     private List<Weather> weatherList = new ArrayList<>();
 
     public User() {
+        // No initialization logic needed for this constructor
     }
 
     public Long getId() {

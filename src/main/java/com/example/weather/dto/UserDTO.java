@@ -9,7 +9,7 @@ public class UserDTO {
     private String countryCode;
     private String name;
     private String email;
-    private List<WeatherDTO> weatherDTOList = new ArrayList<>();
+    private List<WeatherBasicDTO> weatherBasicDTOList = new ArrayList<>();
 
     public static UserDTO toModel(User user) {
         UserDTO model = new UserDTO();
@@ -17,13 +17,14 @@ public class UserDTO {
         model.setCountryCode(user.getCountryCode());
         model.setEmail(user.getEmail());
         model.setName(user.getName());
-        if(model.getWeatherDTOList() != null)
-            model.setWeatherDTOList(user.getWeatherList().stream().map(WeatherDTO::toModel).toList());
+        if(model.getWeatherBasicDTOList() != null)
+            model.setWeatherBasicDTOList(user.getWeatherList().stream().map(WeatherBasicDTO::toModel).toList());
 
         return model;
     }
 
     public UserDTO() {
+        // No initialization logic needed for this constructor
     }
 
     public String getCountryCode() {
@@ -34,12 +35,12 @@ public class UserDTO {
         this.countryCode = countryCode;
     }
 
-    public List<WeatherDTO> getWeatherDTOList() {
-        return weatherDTOList;
+    public List<WeatherBasicDTO> getWeatherBasicDTOList() {
+        return weatherBasicDTOList;
     }
 
-    public void setWeatherDTOList(List<WeatherDTO> weatherDTOList) {
-        this.weatherDTOList = weatherDTOList;
+    public void setWeatherBasicDTOList(List<WeatherBasicDTO> weatherBasicDTOList) {
+        this.weatherBasicDTOList = weatherBasicDTOList;
     }
 
     public String getName() {

@@ -21,6 +21,7 @@ public class WeatherHistoryDTO {
     }
 
     public WeatherHistoryDTO() {
+        // No initialization logic needed for this constructor
     }
 
     public String getDatetime() {
