@@ -22,7 +22,7 @@ public class WeatherDTO {
         model.setDescription(weather.getDescription());
         model.setRh(weather.getRh());
         model.setCityName(weather.getCityName());
-        model.setDatetime(weather.getDatetime());
+        model.setDatetime(weather.getDateTime());
         model.setCountryCode(weather.getCountryCode());
         if(weather.getWeatherHistoryList() != null)
             model.setWeatherHistoryDTOList(weather.getWeatherHistoryList().stream().map(WeatherHistoryDTO::toModel).toList());

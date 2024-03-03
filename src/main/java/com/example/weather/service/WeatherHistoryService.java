@@ -10,11 +10,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class WeatherHistoryService {
-    @Autowired
-    private WeatherHistoryRepo weatherHistoryRepo;
+    private final WeatherHistoryRepo weatherHistoryRepo;
 
-    @Autowired
-    private WeatherRepo weatherRepo;
+    private final WeatherRepo weatherRepo;
+
+    public WeatherHistoryService(WeatherHistoryRepo weatherHistoryRepo, WeatherRepo weatherRepo) {
+        this.weatherHistoryRepo = weatherHistoryRepo;
+        this.weatherRepo = weatherRepo;
+    }
+
     public WeatherHistoryDTO createWeatherHistory(WeatherHistory weatherHistory, String city) {
         Weather weather = weatherRepo.findByCityName(city);
         weatherHistory.setWeather(weather);
@@ -26,7 +30,7 @@ public class WeatherHistoryService {
 
         weatherHistory.setWeather(weather);
         weatherHistory.setDescription(weather.getDescription());
-        weatherHistory.setDatetime(weather.getDatetime());
+        weatherHistory.setDatetime(weather.getDateTime());
         weatherHistory.setTemp(weather.getTemp());
         weatherHistory.setRh(weather.getRh());
         weatherHistory.setCountryCode(weather.getCountryCode());

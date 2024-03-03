@@ -6,16 +6,10 @@ import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.dto.WeatherDTO;
 import com.example.weather.service.WeatherHistoryService;
 import com.example.weather.service.WeatherService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/weather")
@@ -25,13 +19,13 @@ public class WeatherController {
     private String apiKey;
 
 
-    @Autowired
-    private WeatherHistoryService weatherHistoryService;
+    private final WeatherHistoryService weatherHistoryService;
 
     private final WeatherService weatherService;
 
-    public WeatherController(WeatherService weatherService) {
+    public WeatherController(WeatherService weatherService, WeatherHistoryService weatherHistoryService) {
         this.weatherService = weatherService;
+        this.weatherHistoryService = weatherHistoryService;
     }
 
     @PostMapping
@@ -66,11 +60,12 @@ public class WeatherController {
             if (tmpWeather != null) {
                 weatherHistoryService.createWeatherHistory(new WeatherHistory(), tmpWeather, city);
 
-
-                weatherService.updateWeather(tmpWeather, null, null,
-                        Optional.ofNullable(weatherEntity.getDescription()), Optional.ofNullable(weatherEntity.getCityName()),
-                        Optional.ofNullable(weatherEntity.getDatetime()), Optional.ofNullable(weatherEntity.getCountryCode()),
-                        Optional.of(weatherEntity.getTemp()), Optional.of(weatherEntity.getRh()));
+                tmpWeather.setDescription(weatherEntity.getDescription());
+                tmpWeather.setRh(weatherEntity.getRh());
+                tmpWeather.setDateTime(weatherEntity.getDateTime());
+                tmpWeather.setTemp(weatherEntity.getTemp());
+                tmpWeather.setCountryCode(weatherEntity.getCountryCode());
+                tmpWeather.setCityName(weatherEntity.getCityName());
 
                 weatherService.weatherResponse(tmpWeather);
                 return ResponseEntity.ok(WeatherDTO.toModel(tmpWeather));
