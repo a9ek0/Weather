@@ -2,23 +2,24 @@ package com.example.weather.service;
 
 import com.example.weather.dto.UserBasicDTO;
 import com.example.weather.dto.UserDTO;
-import com.example.weather.dto.WeatherDTO;
 import com.example.weather.entity.User;
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.UserRepo;
 import com.example.weather.repository.WeatherRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
-    @Autowired
-    private WeatherRepo weatherRepo;
+    private final WeatherRepo weatherRepo;
+
+    public UserService(UserRepo userRepo, WeatherRepo weatherRepo) {
+        this.userRepo = userRepo;
+        this.weatherRepo = weatherRepo;
+    }
 
     public User userResponse(User user) {
         return userRepo.save(user);

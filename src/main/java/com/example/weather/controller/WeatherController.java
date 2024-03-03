@@ -6,7 +6,6 @@ import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.dto.WeatherDTO;
 import com.example.weather.service.WeatherHistoryService;
 import com.example.weather.service.WeatherService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +29,24 @@ public class WeatherController {
     @PostMapping
     public ResponseEntity<String> weatherResponse(@RequestBody Weather weather) {
         try {
-            weatherService.weatherResponse(weather);
-            return ResponseEntity.ok("Weather was saved successfully!");
+
+            Weather tmpWeather = weatherService.findWeather(weather.getCityName());
+            if (tmpWeather != null) {
+                weatherHistoryService.createWeatherHistory(new WeatherHistory(), tmpWeather, weather.getCityName());
+
+                tmpWeather.setDescription(weather.getDescription());
+                tmpWeather.setRh(weather.getRh());
+                tmpWeather.setDateTime(weather.getDateTime());
+                tmpWeather.setTemp(weather.getTemp());
+                tmpWeather.setCountryCode(weather.getCountryCode());
+                tmpWeather.setCityName(weather.getCityName());
+
+                weatherService.weatherResponse(tmpWeather);
+                return ResponseEntity.ok("Weather was saved successfully!");
+            } else {
+                weatherService.weatherResponse(weather);
+                return ResponseEntity.ok("Weather was saved successfully!");
+            }
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
