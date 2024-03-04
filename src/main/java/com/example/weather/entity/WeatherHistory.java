@@ -3,6 +3,9 @@ package com.example.weather.entity;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Entity
 public class WeatherHistory {
 
@@ -11,7 +14,7 @@ public class WeatherHistory {
     Long id;
     private String description;
     private String countryCode;
-    private String datetime;
+    private LocalDateTime dateTime;
     private double temp;
     private double rh;
 
@@ -25,7 +28,11 @@ public class WeatherHistory {
     public WeatherHistory(JsonNode jsonNode) {
         this.description = jsonNode.get("weather").get("description").asText();
         this.countryCode = jsonNode.get("country_code").asText();
-        this.datetime = jsonNode.get("ob_time").asText();
+
+        String pattern = "yyyy-MM-dd HH:mm";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        this.dateTime = LocalDateTime.parse((jsonNode.get("ob_time").asText()), formatter);
+
         this.temp = jsonNode.get("temp").asDouble();
         this.rh = jsonNode.get("rh").asDouble();
     }
@@ -46,12 +53,12 @@ public class WeatherHistory {
         this.description = description;
     }
 
-    public String getDatetime() {
-        return datetime;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
+    public void setDateTime(LocalDateTime datetime) {
+        this.dateTime = datetime;
     }
 
     public double getTemp() {

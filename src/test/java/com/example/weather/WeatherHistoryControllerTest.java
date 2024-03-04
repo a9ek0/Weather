@@ -1,7 +1,5 @@
 package com.example.weather;
 
-import com.example.weather.controller.WeatherController;
-import com.example.weather.entity.Weather;
 import com.example.weather.entity.WeatherHistory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,6 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class WeatherHistoryCintrollerTest {
+class WeatherHistoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -28,7 +29,10 @@ class WeatherHistoryCintrollerTest {
     void testCreateWeatherHistory() throws Exception {
         WeatherHistory weatherHistory = new WeatherHistory();
 
-        weatherHistory.setDatetime("2024-03-03 23:59");
+        String dateString = "2024-03-03T23:59";
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+        weatherHistory.setDateTime(localDateTime);
         weatherHistory.setDescription("nu tipa norm");
         weatherHistory.setTemp(16.0);
         weatherHistory.setRh(67.0);

@@ -2,9 +2,12 @@ package com.example.weather.dto;
 
 import com.example.weather.entity.WeatherHistory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class WeatherHistoryDTO {
 
-    private String datetime;
+    private LocalDateTime dateTime;
     private String description;
     private double temp;
     private double rh;
@@ -14,7 +17,7 @@ public class WeatherHistoryDTO {
         model.setTemp(weatherHistory.getTemp());
         model.setDescription(weatherHistory.getDescription());
         model.setRh(weatherHistory.getRh());
-        model.setDatetime(weatherHistory.getDatetime());
+        model.setDateTime(weatherHistory.getDateTime());
         model.setCountryCode(weatherHistory.getCountryCode());
 
         return model;
@@ -24,12 +27,12 @@ public class WeatherHistoryDTO {
         // No initialization logic needed for this constructor
     }
 
-    public String getDatetime() {
-        return datetime;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getDescription() {

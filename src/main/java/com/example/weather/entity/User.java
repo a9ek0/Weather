@@ -16,7 +16,7 @@ public class User {
     private String email;
     private String countryCode;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "WEATHER_USER_MAPPING",
                joinColumns = @JoinColumn(name  = "userId"),
                inverseJoinColumns = @JoinColumn(name = "weatherId"))

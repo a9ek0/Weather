@@ -53,7 +53,7 @@ class WeatherControllerTest {
 
     @Test
     void testGetWeather() throws Exception {
-        String city = "Minsk";
+        String city = "Moscow";
 
         mockMvc.perform(get("/weather/city")
                         .param("city", city))
@@ -62,7 +62,7 @@ class WeatherControllerTest {
 
     @Test
     void testDeleteWeather() throws Exception {
-        Long id = 1452L;
+        Long id = 1552L;
 
         mockMvc.perform(delete("/weather/{id}", id))
                 .andExpect(status().isOk())
@@ -71,7 +71,7 @@ class WeatherControllerTest {
 
     @Test
     void testUpdateWeather() throws Exception {
-        Long id = 1452L;
+        Long id = 1502L;
         Weather updatedWeather = new Weather.Builder()
                 .rh(60.0)
                 .temp(10.0)

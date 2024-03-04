@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/weather/history")
 public class WeatherHistoryController {
@@ -31,7 +33,7 @@ public class WeatherHistoryController {
     @PutMapping("/update")
     public ResponseEntity createWeatherHistory(@RequestParam String countryCode,
                                                @RequestParam String description,
-                                               @RequestParam String dataTime,
+                                               @RequestParam LocalDateTime dataTime,
                                                @RequestParam double temp,
                                                @RequestParam double rh,
                                                @RequestParam Long   id) {

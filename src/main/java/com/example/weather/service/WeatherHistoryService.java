@@ -1,15 +1,14 @@
 package com.example.weather.service;
 
-import com.example.weather.dto.WeatherDTO;
 import com.example.weather.dto.WeatherHistoryDTO;
 import com.example.weather.entity.Weather;
 import com.example.weather.entity.WeatherHistory;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.repository.WeatherHistoryRepo;
 import com.example.weather.repository.WeatherRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,7 +33,7 @@ public class WeatherHistoryService {
 
         weatherHistory.setWeather(weather);
         weatherHistory.setDescription(weather.getDescription());
-        weatherHistory.setDatetime(weather.getDateTime());
+        weatherHistory.setDateTime(weather.getDateTime());
         weatherHistory.setTemp(weather.getTemp());
         weatherHistory.setRh(weather.getRh());
         weatherHistory.setCountryCode(weather.getCountryCode());
@@ -43,13 +42,13 @@ public class WeatherHistoryService {
         return WeatherHistoryDTO.toModel(weatherHistoryRepo.save(weatherHistory));
     }
 
-    public WeatherHistoryDTO complete(Long id, String countryCode, double temp, double rh, String dataTime, String description) {
+    public WeatherHistoryDTO complete(Long id, String countryCode, double temp, double rh, LocalDateTime dataTime, String description) {
         WeatherHistory weatherHistory = weatherHistoryRepo.findById(id).get();
 
         weatherHistory.setCountryCode(countryCode);
         weatherHistory.setTemp(temp);
         weatherHistory.setRh(rh);
-        weatherHistory.setDatetime(dataTime);
+        weatherHistory.setDateTime(dataTime);
         weatherHistory.setDescription(description);
 
         return WeatherHistoryDTO.toModel(weatherHistoryRepo.save(weatherHistory));

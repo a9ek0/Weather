@@ -7,7 +7,7 @@ import java.util.List;
 
 public class WeatherBasicDTO {
     private String cityName;
-    private String datetime;
+    private String dateTime;
     private String description;
     private double temp;
     private double rh;
@@ -21,7 +21,7 @@ public class WeatherBasicDTO {
         model.setDescription(weather.getDescription());
         model.setRh(weather.getRh());
         model.setCityName(weather.getCityName());
-        model.setDatetime(weather.getDateTime());
+        model.setDateTime(weather.getDateTime().toString());
         model.setCountryCode(weather.getCountryCode());
         if(weather.getWeatherHistoryList() != null)
             model.setWeatherHistoryDTOList(weather.getWeatherHistoryList().stream().map(WeatherHistoryDTO::toModel).toList());
@@ -51,12 +51,12 @@ public class WeatherBasicDTO {
         this.cityName = cityName;
     }
 
-    public String getDatetime() {
-        return datetime;
+    public String getDateTime() {
+        return dateTime;
     }
 
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getDescription() {

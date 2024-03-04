@@ -2,7 +2,10 @@ package com.example.weather.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +18,19 @@ public class Weather {
     private Long id;
     private String description;
     private String cityName;
-    private String dateTime;
+    private LocalDateTime dateTime;
     private String countryCode;
     private Double temp;
     private Double rh;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "weather")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "weather", fetch = FetchType.LAZY)
     private List<WeatherHistory> weatherHistoryList = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "cityId")
+    private City city;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "WEATHER_USER_MAPPING",
             joinColumns = @JoinColumn(name = "weatherId"),
             inverseJoinColumns = @JoinColumn(name = "userId"))
@@ -36,7 +43,11 @@ public class Weather {
         this.description = jsonNode.get("weather").get("description").asText();
         this.countryCode = jsonNode.get("country_code").asText();
         this.cityName = jsonNode.get("city_name").asText();
-        this.dateTime = jsonNode.get("ob_time").asText();
+
+        String pattern = "yyyy-MM-dd HH:mm";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        this.dateTime = LocalDateTime.parse((jsonNode.get("ob_time").asText()), formatter);
+
         this.temp = jsonNode.get("temp").asDouble();
         this.rh = jsonNode.get("rh").asDouble();
     }
@@ -49,12 +60,12 @@ public class Weather {
         this.cityName = cityName;
     }
 
-    public String getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String datetime) {
-        this.dateTime = datetime;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public Long getId() {
@@ -117,7 +128,7 @@ public class Weather {
         private Long id;
         private String description;
         private String cityName;
-        private String dateTime;
+        private LocalDateTime dateTime;
         private String countryCode;
         private Double temp;
         private Double rh;
@@ -144,7 +155,9 @@ public class Weather {
         }
 
         public Builder dateTime(String dateTime) {
-            this.dateTime = dateTime;
+            String pattern = "yyyy-MM-dd HH:mm";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            this.dateTime = LocalDateTime.parse(dateTime, formatter);
             return this;
         }
 
@@ -201,5 +214,13 @@ public class Weather {
         this.rh = builder.rh;
         this.weatherHistoryList = builder.weatherHistoryList;
         this.userList = builder.userList;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 }
