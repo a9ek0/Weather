@@ -32,7 +32,6 @@ class WeatherControllerTest {
                 .countryCode("RU")
                 .cityName("Moscow")
                 .description("*******")
-                .weatherHistoryList(null)
                 .dateTime("2024-03-03 23:59")
                 .build();
 

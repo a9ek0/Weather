@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface WeatherRepo extends CrudRepository<Weather, Long> {
 
-    Weather findByCityName(String cityName);
+    List<Weather> findByCityName(String cityName);
     List<Weather> findByCountryCode(String countryCode);
 }

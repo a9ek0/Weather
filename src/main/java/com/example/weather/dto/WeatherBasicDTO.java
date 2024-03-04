@@ -2,17 +2,12 @@ package com.example.weather.dto;
 
 import com.example.weather.entity.Weather;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class WeatherBasicDTO {
-    private String cityName;
     private String dateTime;
     private String description;
     private double temp;
     private double rh;
     private String countryCode;
-    private List<WeatherHistoryDTO> weatherHistoryDTOList = new ArrayList<>();
 
     public static WeatherBasicDTO toModel(Weather weather) {
         WeatherBasicDTO model = new WeatherBasicDTO();
@@ -20,11 +15,8 @@ public class WeatherBasicDTO {
         model.setTemp(weather.getTemp());
         model.setDescription(weather.getDescription());
         model.setRh(weather.getRh());
-        model.setCityName(weather.getCityName());
         model.setDateTime(weather.getDateTime().toString());
         model.setCountryCode(weather.getCountryCode());
-        if(weather.getWeatherHistoryList() != null)
-            model.setWeatherHistoryDTOList(weather.getWeatherHistoryList().stream().map(WeatherHistoryDTO::toModel).toList());
 
         return model;
     }
@@ -41,14 +33,6 @@ public class WeatherBasicDTO {
      */
     public WeatherBasicDTO() {
         // No initialization logic needed for this constructor
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
     }
 
     public String getDateTime() {
@@ -81,14 +65,6 @@ public class WeatherBasicDTO {
 
     public void setRh(double rh) {
         this.rh = rh;
-    }
-
-    public List<WeatherHistoryDTO> getWeatherHistoryDTOList() {
-        return weatherHistoryDTOList;
-    }
-
-    public void setWeatherHistoryDTOList(List<WeatherHistoryDTO> weatherHistoryDTOList) {
-        this.weatherHistoryDTOList = weatherHistoryDTOList;
     }
 
     public String getCountryCode() {

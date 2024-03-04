@@ -1,10 +1,10 @@
 package com.example.weather.controller;
 
+import com.example.weather.entity.City;
 import com.example.weather.entity.Weather;
-import com.example.weather.entity.WeatherHistory;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.dto.WeatherDTO;
-import com.example.weather.service.WeatherHistoryService;
+import com.example.weather.service.CityService;
 import com.example.weather.service.WeatherService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -16,37 +16,22 @@ public class WeatherController {
 
     @Value("${weatherbit.api-key}")
     private String apiKey;
-    private static final String ERROR_MESSAGE = "Error occurred!";
-    private final WeatherHistoryService weatherHistoryService;
 
+    final
+    CityService cityService;
+    private static final String ERROR_MESSAGE = "Error occurred!";
     private final WeatherService weatherService;
 
-    public WeatherController(WeatherService weatherService, WeatherHistoryService weatherHistoryService) {
+    public WeatherController(WeatherService weatherService, CityService cityService) {
         this.weatherService = weatherService;
-        this.weatherHistoryService = weatherHistoryService;
+        this.cityService = cityService;
     }
 
     @PostMapping
     public ResponseEntity<String> weatherResponse(@RequestBody Weather weather) {
         try {
-
-            Weather tmpWeather = weatherService.findWeather(weather.getCityName());
-            if (tmpWeather != null) {
-                weatherHistoryService.createWeatherHistory(new WeatherHistory(), tmpWeather, weather.getCityName());
-
-                tmpWeather.setDescription(weather.getDescription());
-                tmpWeather.setRh(weather.getRh());
-                tmpWeather.setDateTime(weather.getDateTime());
-                tmpWeather.setTemp(weather.getTemp());
-                tmpWeather.setCountryCode(weather.getCountryCode());
-                tmpWeather.setCityName(weather.getCityName());
-
-                weatherService.weatherResponse(tmpWeather);
-                return ResponseEntity.ok("Weather was saved successfully!");
-            } else {
-                weatherService.weatherResponse(weather);
-                return ResponseEntity.ok("Weather was saved successfully!");
-            }
+            weatherService.weatherResponse(weather);
+            return ResponseEntity.ok("Weather was saved successfully!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -64,30 +49,19 @@ public class WeatherController {
     }
 
     @GetMapping("/city")
-    public ResponseEntity<WeatherDTO> getWeather(@RequestParam String city) {
+    public ResponseEntity<WeatherDTO> getWeather(@RequestParam String cityName) {
         try {
-            String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + city;
-
+            String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + cityName;
             Weather weatherEntity = weatherService.processApiUrl(apiUrl);
 
-            Weather tmpWeather = weatherService.findWeather(weatherEntity.getCityName());
-            if (tmpWeather != null) {
-                weatherHistoryService.createWeatherHistory(new WeatherHistory(), tmpWeather, city);
-
-                tmpWeather.setDescription(weatherEntity.getDescription());
-                tmpWeather.setRh(weatherEntity.getRh());
-                tmpWeather.setDateTime(weatherEntity.getDateTime());
-                tmpWeather.setTemp(weatherEntity.getTemp());
-                tmpWeather.setCountryCode(weatherEntity.getCountryCode());
-                tmpWeather.setCityName(weatherEntity.getCityName());
-
-                weatherService.weatherResponse(tmpWeather);
-                return ResponseEntity.ok(WeatherDTO.toModel(tmpWeather));
-            } else {
-                weatherService.weatherResponse(weatherEntity);
-                return ResponseEntity.ok(WeatherDTO.toModel(weatherEntity));
+            City city = cityService.findCityByCityName(cityName);
+            if (city != null) {
+                city.getWeatherList().add(weatherEntity);
+                weatherEntity.setCity(city);
             }
 
+            weatherService.weatherResponse(weatherEntity);
+            return ResponseEntity.ok(WeatherDTO.toModel(weatherEntity));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,7 +79,7 @@ public class WeatherController {
     }
 
     @PutMapping("/update/id/")
-    public ResponseEntity<String> updateWeather(@RequestParam Long id, @RequestBody Weather weather){
+    public ResponseEntity<String> updateWeather(@RequestParam Long id, @RequestBody Weather weather) {
         try {
             weatherService.complete(id, weather);
             return ResponseEntity.ok("Updated successfully!");

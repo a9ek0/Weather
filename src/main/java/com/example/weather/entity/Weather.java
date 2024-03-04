@@ -2,7 +2,6 @@ package com.example.weather.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,9 +21,6 @@ public class Weather {
     private String countryCode;
     private Double temp;
     private Double rh;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "weather", fetch = FetchType.LAZY)
-    private List<WeatherHistory> weatherHistoryList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "cityId")
@@ -108,14 +104,6 @@ public class Weather {
         this.countryCode = countryCode;
     }
 
-    public List<WeatherHistory> getWeatherHistoryList() {
-        return weatherHistoryList;
-    }
-
-    public void setWeatherHistoryList(List<WeatherHistory> weatherHistoryList) {
-        this.weatherHistoryList = weatherHistoryList;
-    }
-
     public List<User> getUserList() {
         return userList;
     }
@@ -132,11 +120,10 @@ public class Weather {
         private String countryCode;
         private Double temp;
         private Double rh;
-        private List<WeatherHistory> weatherHistoryList;
         private List<User> userList;
 
         public Builder() {
-            // По умолчанию все поля равны null
+            // No initialization logic needed for this constructor
         }
 
         public Builder id(Long id) {
@@ -176,11 +163,6 @@ public class Weather {
             return this;
         }
 
-        public Builder weatherHistoryList(List<WeatherHistory> weatherHistoryList) {
-            this.weatherHistoryList = weatherHistoryList;
-            return this;
-        }
-
         public Builder userList(List<User> userList) {
             this.userList = userList;
             return this;
@@ -198,7 +180,6 @@ public class Weather {
             this.countryCode = existingWeather.countryCode;
             this.temp = existingWeather.temp;
             this.rh = existingWeather.rh;
-            this.weatherHistoryList = existingWeather.weatherHistoryList;
             this.userList = existingWeather.userList;
             return this;
         }
@@ -212,7 +193,6 @@ public class Weather {
         this.countryCode = builder.countryCode;
         this.temp = builder.temp;
         this.rh = builder.rh;
-        this.weatherHistoryList = builder.weatherHistoryList;
         this.userList = builder.userList;
     }
 

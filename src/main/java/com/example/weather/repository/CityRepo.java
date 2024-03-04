@@ -4,4 +4,8 @@ import com.example.weather.entity.City;
 import org.springframework.data.repository.CrudRepository;
 
 public interface CityRepo extends CrudRepository<City, Long> {
+
+    City findByName(String name);
+
+
 }

@@ -9,7 +9,7 @@ public class UserDTO {
     private String countryCode;
     private String name;
     private String email;
-    private List<WeatherBasicDTO> weatherBasicDTOList = new ArrayList<>();
+    private List<WeatherUsersDTO> weatherUsersDTOList = new ArrayList<>();
 
     public static UserDTO toModel(User user) {
         UserDTO model = new UserDTO();
@@ -17,8 +17,8 @@ public class UserDTO {
         model.setCountryCode(user.getCountryCode());
         model.setEmail(user.getEmail());
         model.setName(user.getName());
-        if(model.getWeatherBasicDTOList() != null)
-            model.setWeatherBasicDTOList(user.getWeatherList().stream().map(WeatherBasicDTO::toModel).toList());
+        if(model.getWeatherUsersDTOList() != null)
+            model.setWeatherUsersDTOList(user.getWeatherList().stream().map(WeatherUsersDTO::toModel).toList());
 
         return model;
     }
@@ -35,12 +35,12 @@ public class UserDTO {
         this.countryCode = countryCode;
     }
 
-    public List<WeatherBasicDTO> getWeatherBasicDTOList() {
-        return weatherBasicDTOList;
+    public List<WeatherUsersDTO> getWeatherUsersDTOList() {
+        return weatherUsersDTOList;
     }
 
-    public void setWeatherBasicDTOList(List<WeatherBasicDTO> weatherBasicDTOList) {
-        this.weatherBasicDTOList = weatherBasicDTOList;
+    public void setWeatherUsersDTOList(List<WeatherUsersDTO> weatherUsersDTOList) {
+        this.weatherUsersDTOList = weatherUsersDTOList;
     }
 
     public String getName() {

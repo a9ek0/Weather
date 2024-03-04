@@ -2,31 +2,23 @@ package com.example.weather.dto;
 
 import com.example.weather.entity.Weather;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-public class WeatherDTO {
-    private String cityName;
-    private LocalDateTime dateTime;
+public class WeatherUsersDTO {
+    private String city;
+    private String dateTime;
     private String description;
     private double temp;
     private double rh;
     private String countryCode;
-    private List<UserBasicDTO> userBasicDTOList = new ArrayList<>();
 
-    public static WeatherDTO toModel(Weather weather) {
-        WeatherDTO model = new WeatherDTO();
+    public static WeatherUsersDTO toModel(Weather weather) {
+        WeatherUsersDTO model = new WeatherUsersDTO();
 
+        model.setCity(weather.getCityName());
         model.setTemp(weather.getTemp());
         model.setDescription(weather.getDescription());
         model.setRh(weather.getRh());
-        model.setCityName(weather.getCityName());
         model.setDateTime(weather.getDateTime().toString());
         model.setCountryCode(weather.getCountryCode());
-        if(weather.getUserList() != null)
-            model.setUserBasicDTOList(weather.getUserList().stream().map(UserBasicDTO::toModel).toList());
 
         return model;
     }
@@ -41,25 +33,16 @@ public class WeatherDTO {
      * It is intentionally left empty as the initialization logic is not needed.
      * </p>
      */
-    public WeatherDTO() {
+    public WeatherUsersDTO() {
         // No initialization logic needed for this constructor
     }
 
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public LocalDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
     public void setDateTime(String dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        this.dateTime = LocalDateTime.parse(dateTime, formatter);
+        this.dateTime = dateTime;
     }
 
     public String getDescription() {
@@ -94,11 +77,11 @@ public class WeatherDTO {
         this.countryCode = countryCode;
     }
 
-    public List<UserBasicDTO> getUserBasicDTOList() {
-        return userBasicDTOList;
+    public String getCity() {
+        return city;
     }
 
-    public void setUserBasicDTOList(List<UserBasicDTO> userBasicDTOList) {
-        this.userBasicDTOList = userBasicDTOList;
+    public void setCity(String city) {
+        this.city = city;
     }
 }

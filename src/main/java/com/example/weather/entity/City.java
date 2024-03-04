@@ -13,10 +13,11 @@ public class City {
 
     private String name;
 
-    @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "city", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Weather> weatherList = new ArrayList<>();
 
     public City() {
+        // No initialization logic needed for this constructor
     }
 
     public Long getId() {

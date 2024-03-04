@@ -8,6 +8,8 @@ import com.example.weather.repository.CityRepo;
 import com.example.weather.repository.WeatherRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CityService {
 
@@ -34,19 +36,28 @@ public class CityService {
         return CityDTO.toModel(city);
     }
 
-    public CityDTO createUser(City city, String countryCode) {
-        Weather weather = weatherRepo.findByCityName(countryCode);
-        city.getWeatherList().add(weather);
-        return CityDTO.toModel(cityRepo.save(city));
-    }
-
-    public City findUserById(Long userId) {
+    public City findCityById(Long userId) {
         if (userId != null)
             return cityRepo.findById(userId).get();
         return null;
     }
 
+    public City findCityByCityName(String name) {
+        if (name != null)
+            return cityRepo.findByName(name);
+        return null;
+    }
+
     public Long delete(Long id) {
+        City city = findCityById(id);
+        List<Weather> weathers = city.getWeatherList();
+
+        for (Weather weather : weathers) {
+            weather.setCity(null);
+        }
+
+        city.setWeatherList(null);
+
         cityRepo.deleteById(id);
         return id;
     }
@@ -55,7 +66,7 @@ public class CityService {
         City city = cityRepo.findById(id).get();
 
         city.setName(updatedCity.getName());
-        if(!updatedCity.getWeatherList().isEmpty())
+        if (!updatedCity.getWeatherList().isEmpty())
             city.setWeatherList(updatedCity.getWeatherList());
 
         return CityDTO.toModel(cityRepo.save(city));

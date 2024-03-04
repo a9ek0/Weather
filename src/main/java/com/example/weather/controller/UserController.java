@@ -5,7 +5,6 @@ import com.example.weather.entity.Weather;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.service.UserService;
 import com.example.weather.service.WeatherService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,13 +35,12 @@ public class UserController {
     @PostMapping("/ForWeathers")
     public ResponseEntity<String> createUserForWeathers(@RequestBody User user) {
         try {
-            List<Weather> weathers = weatherService.getWeatherByCountryCode(user.getCountryCode());
 
+            List<Weather> weathers = weatherService.getWeatherByCountryCode(user.getCountryCode());
             for (Weather weather : weathers) {
                 if (!weather.getUserList().contains(user)) {
                     weather.getUserList().add(user);
                 }
-                weatherService.weatherResponse(weather);
             }
 
             userService.userResponse(user);

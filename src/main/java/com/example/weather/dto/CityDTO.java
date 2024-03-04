@@ -7,11 +7,11 @@ import java.util.List;
 
 public class CityDTO {
     private String name;
-
-    private List<WeatherDTO> weatherDTOList = new ArrayList<>();
+    private List<WeatherBasicDTO> weatherBasicDTOS = new ArrayList<>();
 
 
     public CityDTO() {
+        // No initialization logic needed for this constructor
     }
 
     public static CityDTO toModel(City city) {
@@ -19,8 +19,7 @@ public class CityDTO {
 
         model.setName(city.getName());
         if(city.getWeatherList() != null)
-            model.setWeatherDTOList(city.getWeatherList().stream().map(WeatherDTO::toModel).toList());
-
+            model.setWeatherBasicDTOS(city.getWeatherList().stream().map(WeatherBasicDTO::toModel).toList());
 
         return model;
     }
@@ -33,11 +32,11 @@ public class CityDTO {
         this.name = name;
     }
 
-    public List<WeatherDTO> getWeatherDTOList() {
-        return weatherDTOList;
+    public List<WeatherBasicDTO> getWeatherBasicDTOS() {
+        return weatherBasicDTOS;
     }
 
-    public void setWeatherDTOList(List<WeatherDTO> weatherDTOList) {
-        this.weatherDTOList = weatherDTOList;
+    public void setWeatherBasicDTOS(List<WeatherBasicDTO> weatherBasicDTOS) {
+        this.weatherBasicDTOS = weatherBasicDTOS;
     }
 }

@@ -41,19 +41,20 @@ public class WeatherService {
         return WeatherDTO.toModel(weather);
     }
 
-    public WeatherDTO getWeather(String city) throws CityNotFoundException {
-        Weather weather = weatherRepo.findByCityName(city);
+    public List<WeatherDTO> getWeather(String city) throws CityNotFoundException {
+        List<Weather> weathers = weatherRepo.findByCityName(city);
 
-        if (weather == null) {
+        if (weathers.isEmpty()) {
             throw new CityNotFoundException("City not found!");
         }
 
-        return WeatherDTO.toModel(weather);
+        return weathers.stream().map(WeatherDTO::toModel).toList();
     }
 
-    public Weather findWeather(String city) {
+    public List<Weather> findWeather(String city) {
         return weatherRepo.findByCityName(city);
     }
+
 
     public Long delete(Long id) {
         weatherRepo.deleteById(id);
@@ -98,7 +99,6 @@ public class WeatherService {
         weather.setDateTime(updatedWeather.getDateTime());
         weather.setDescription(updatedWeather.getDescription());
         weather.setCityName(updatedWeather.getCityName());
-        weather.setWeatherHistoryList(updatedWeather.getWeatherHistoryList());
         weather.setUserList(updatedWeather.getUserList());
 
         return WeatherDTO.toModel(weatherRepo.save(weather));
