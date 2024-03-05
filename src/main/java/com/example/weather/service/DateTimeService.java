@@ -7,6 +7,11 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 public class DateTimeService {
+
+    private DateTimeService() {
+        // Private constructor to hide the implicit public one
+    }
+    
     public static LocalDateTime toDateTime(String dateString) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
