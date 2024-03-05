@@ -2,13 +2,10 @@ package com.example.weather.service;
 
 import com.example.weather.dto.CityDTO;
 import com.example.weather.entity.City;
-import com.example.weather.entity.Weather;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.CityRepo;
 import com.example.weather.repository.WeatherRepo;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CityService {
@@ -49,15 +46,6 @@ public class CityService {
     }
 
     public Long delete(Long id) {
-        City city = findCityById(id);
-        List<Weather> weathers = city.getWeatherList();
-
-        for (Weather weather : weathers) {
-            weather.setCity(null);
-        }
-
-        city.setWeatherList(null);
-
         cityRepo.deleteById(id);
         return id;
     }

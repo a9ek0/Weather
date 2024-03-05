@@ -1,5 +1,6 @@
 package com.example.weather.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 
@@ -17,6 +18,7 @@ public class Weather {
     private Long id;
     private String description;
     private String cityName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
     private String countryCode;
     private Double temp;
@@ -26,7 +28,7 @@ public class Weather {
     @JoinColumn(name = "cityId")
     private City city;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "WEATHER_USER_MAPPING",
             joinColumns = @JoinColumn(name = "weatherId"),
             inverseJoinColumns = @JoinColumn(name = "userId"))
@@ -141,10 +143,8 @@ public class Weather {
             return this;
         }
 
-        public Builder dateTime(String dateTime) {
-            String pattern = "yyyy-MM-dd HH:mm";
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-            this.dateTime = LocalDateTime.parse(dateTime, formatter);
+        public Builder dateTime(LocalDateTime dateTime) {
+            this.dateTime = dateTime;
             return this;
         }
 

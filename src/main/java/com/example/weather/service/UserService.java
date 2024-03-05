@@ -7,6 +7,8 @@ import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.UserRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -32,6 +34,10 @@ public class UserService {
         if (userId != null)
             return userRepo.findById(userId).get();
         return null;
+    }
+
+    public List<User> getAllUsers(String countryCode) {
+        return userRepo.findByCountryCode(countryCode);
     }
 
     public Long delete(Long id) {

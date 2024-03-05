@@ -40,7 +40,7 @@ class CityControllerTest {
     void testCityResponse() throws Exception {
         City city = new City();
 
-        city.setName("Berlin");
+        city.setName("Katowice");
 
         mockMvc.perform(post("/weather/city")
                         .content(asJsonString(city))
@@ -59,7 +59,7 @@ class CityControllerTest {
 
     @Test
     void testDeleteCity() throws Exception {
-        Long id = 602L;
+        Long id = 1802L;
 
         mockMvc.perform(delete("/weather/city/delete/{id}", id))
                 .andExpect(status().isOk())
@@ -68,7 +68,7 @@ class CityControllerTest {
 
     @Test
     void testUpdateCity() throws Exception {
-        Long id = 652L;
+        Long id = 702L;
         City updatedCity = new City();
 
         updatedCity.setName("Grodno");

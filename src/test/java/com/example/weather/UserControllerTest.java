@@ -62,7 +62,7 @@ class UserControllerTest {
 
     @Test
     void testDeleteUser() throws Exception {
-        Long id = 2452L;
+        Long id = 2752L;
 
         mockMvc.perform(delete("/weather/user/delete/{id}", id))
                 .andExpect(status().isOk())
@@ -71,7 +71,7 @@ class UserControllerTest {
 
     @Test
     void testUpdateUser() throws Exception {
-        Long id = 2402L;
+        Long id = 2852L;
         User updatedUser = new User();
 
         updatedUser.setCountryCode("RU");

@@ -1,6 +1,7 @@
 package com.example.weather.dto;
 
 import com.example.weather.entity.Weather;
+import com.example.weather.service.DateTimeService;
 
 public class WeatherBasicDTO {
     private String dateTime;
@@ -15,7 +16,7 @@ public class WeatherBasicDTO {
         model.setTemp(weather.getTemp());
         model.setDescription(weather.getDescription());
         model.setRh(weather.getRh());
-        model.setDateTime(weather.getDateTime().toString());
+        model.setDateTime(DateTimeService.toString(weather.getDateTime()));
         model.setCountryCode(weather.getCountryCode());
 
         return model;

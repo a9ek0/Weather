@@ -1,15 +1,14 @@
 package com.example.weather.dto;
 
 import com.example.weather.entity.Weather;
+import com.example.weather.service.DateTimeService;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherDTO {
     private String cityName;
-    private LocalDateTime dateTime;
+    private String dateTime;
     private String description;
     private double temp;
     private double rh;
@@ -23,7 +22,7 @@ public class WeatherDTO {
         model.setDescription(weather.getDescription());
         model.setRh(weather.getRh());
         model.setCityName(weather.getCityName());
-        model.setDateTime(weather.getDateTime().toString());
+        model.setDateTime(DateTimeService.toString(weather.getDateTime()));
         model.setCountryCode(weather.getCountryCode());
         if(weather.getUserList() != null)
             model.setUserBasicDTOList(weather.getUserList().stream().map(UserBasicDTO::toModel).toList());
@@ -53,13 +52,12 @@ public class WeatherDTO {
         this.cityName = cityName;
     }
 
-    public LocalDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
     public void setDateTime(String dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        this.dateTime = LocalDateTime.parse(dateTime, formatter);
+        this.dateTime = dateTime;
     }
 
     public String getDescription() {

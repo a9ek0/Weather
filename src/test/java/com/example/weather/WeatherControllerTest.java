@@ -1,7 +1,7 @@
 package com.example.weather;
 
-import com.example.weather.controller.WeatherController;
 import com.example.weather.entity.Weather;
+import com.example.weather.service.DateTimeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ class WeatherControllerTest {
                 .countryCode("RU")
                 .cityName("Moscow")
                 .description("*******")
-                .dateTime("2024-03-03 23:59")
+                .dateTime(DateTimeService.toDateTime("2024-03-03 23:59"))
                 .build();
 
         mockMvc.perform(post("/weather")
@@ -55,13 +55,13 @@ class WeatherControllerTest {
         String city = "Moscow";
 
         mockMvc.perform(get("/weather/city")
-                        .param("city", city))
+                        .param("cityName", city))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testDeleteWeather() throws Exception {
-        Long id = 1552L;
+        Long id = 2252L;
 
         mockMvc.perform(delete("/weather/{id}", id))
                 .andExpect(status().isOk())
@@ -70,14 +70,14 @@ class WeatherControllerTest {
 
     @Test
     void testUpdateWeather() throws Exception {
-        Long id = 1502L;
+        Long id = 2202L;
         Weather updatedWeather = new Weather.Builder()
                 .rh(60.0)
                 .temp(10.0)
                 .countryCode("RU")
                 .cityName("Moscow")
                 .description("*******")
-                .dateTime("2024-03-03 23:59")
+                .dateTime(DateTimeService.toDateTime("2024-03-03 23:59"))
                 .build();
 
         mockMvc.perform(put("/weather/update/id/")
