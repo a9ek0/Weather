@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -65,7 +66,8 @@ public class WeatherService {
         try {
             return objectMapper.readValue(jsonResponse, Weather.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(getClass().getName());
+            logger.info("Error occurred!");
             return null;
         }
     }
