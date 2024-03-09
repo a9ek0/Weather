@@ -46,64 +46,58 @@ public class WeatherController {
 
     @PostMapping
     public ResponseEntity<String> weatherResponse(@RequestBody Weather weather) {
+        log.info("Data creation processing.");
         try {
-
             weatherService.weatherResponse(weather);
-
-            log.info("Weather was created successfully!");
+            log.info("Weather was created successfully.");
             return ResponseEntity.ok("Weather was saved successfully!");
         } catch (Exception e) {
-            log.error("Error creating weather!");
-
+            log.error("Error creating weather.");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/db/{city}")
     public ResponseEntity getWeatherDB(@PathVariable String city) {
-        log.info("Processing request for data");
-
+        log.info("Processing request for data.");
         try {
-            if(cache.containsKey(city)){
+            if (cache.containsKey(city)) {
                 return ResponseEntity.ok(cache.get(city));
             }
-
             cache.put(city, weatherService.getWeather(city));
-
             log.info("Data processing successful");
             return ResponseEntity.ok(weatherService.getWeather(city));
         } catch (CityNotFoundException e) {
             log.warn("Error processing data. {}", e.getMessage());
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error processing data");
+            log.error("Error processing data.");
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @GetMapping("/db/city")
     public ResponseEntity getWeatherQueryDB(@RequestParam("cityName") String cityName) {
-        log.info("Processing request for data");
-
+        log.info("Processing request for data.");
         try {
-            if(cache.containsKey(cityName)){
+            if (cache.containsKey(cityName)) {
                 return ResponseEntity.ok(cache.get(cityName));
             }
-
             cache.put(cityName, weatherService.getWeatherDB(cityName));
-            log.info("Data processing successful");
+            log.info("Data processing successful.");
             return ResponseEntity.ok(cache.get(cityName));
         } catch (CityNotFoundException e) {
             log.warn("Error processing data. {}", e.getMessage());
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error processing data", e);
+            log.error("Error processing data.");
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @GetMapping("/city")
     public ResponseEntity getWeather(@RequestParam String cityName) {
+        log.info("Processing request for data.");
         try {
             String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + cityName;
             Weather weatherEntity = weatherService.processApiUrl(apiUrl);
@@ -122,43 +116,40 @@ public class WeatherController {
 
             cache.put(cityName, city.getWeatherList().stream().map(WeatherDTO::toModel).toList());
             weatherService.weatherResponse(weatherEntity);
-            log.info("Weather information retrieved successfully!");
+            log.info("Weather information retrieved successfully.");
             return ResponseEntity.ok(WeatherDTO.toModel(weatherEntity));
         } catch (Exception e) {
-            log.error("Error processing data");
+            log.error("Error processing data.");
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
+        log.info("Data deletion processing.");
         try {
             weatherService.delete(id);
-
             log.info("Weather with ID {} deleted successfully!", id);
             return ResponseEntity.ok("Deleted successfully!");
         } catch (IdNotFoundException e) {
             log.warn("Error deleting weather with ID {}. {}", id, e.getMessage());
-
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error deleting weather");
-
+            log.error("Error deleting weather.");
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @PutMapping("/update/id/")
     public ResponseEntity<String> updateWeather(@RequestParam Long id, @RequestBody Weather weather) {
+        log.info("Data update processing.");
         try {
             weatherService.complete(id, weather);
-
-            log.info("Weather with ID {} updated successfully!", id);
+            log.info("Weather with ID {} updated successfully.", id);
             return ResponseEntity.ok("Updated successfully!");
         } catch (Exception e) {
             log.error("Error updating weather.");
             return weatherExceptionHandler.handleInternalServerError(e);
-            //return ResponseEntity.badRequest().body(ERROR_MESSAGE);
         }
     }
 }

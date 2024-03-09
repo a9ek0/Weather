@@ -36,6 +36,7 @@ public class CityController {
 
     @PostMapping
     public ResponseEntity<String> cityResponse(@RequestBody City city) {
+        log.info("Data creation processing.");
         try {
             if (cityService.findCityByCityName(city.getName()) != null) {
                 throw new CityAlreadyExistsException("City already exists!");
@@ -48,45 +49,49 @@ public class CityController {
             }
 
             cityService.cityResponse(city);
-            log.info("City {} was saved successfully!", city.getName());
+            log.info("City {} was saved successfully.", city.getName());
             return ResponseEntity.ok("City was saved successfully!");
         } catch (Exception e) {
-            log.error("Error saving city!");
+            log.error("Error saving city.");
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity getUser(@PathVariable Long id) {
+        log.info("Processing request for data.");
         try {
-            log.info("Processing request for city with ID {}", id);
+            log.info("City with ID {} saved successfully.", id);
             return ResponseEntity.ok(cityService.getCity(id));
         } catch (UserNotFoundException e) {
             log.warn("City with ID {} not found. {}", id, e.getMessage());
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error processing request for city with ID {}", id);
+            log.error("Error processing request for city with ID {}.", id);
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
+        log.info("Data deletion processing.");
         try {
-            log.info("Deleting city with ID {}", id);
+            log.info("Deleting city with ID {}.", id);
             cityService.delete(id);
+            log.info("City with ID {} deleted successfully.", id);
             return ResponseEntity.ok("Deleted successfully!");
         } catch (IdNotFoundException e) {
             log.warn("Error deleting city with ID {}. {}", id, e.getMessage());
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error deleting city with ID {}", id, e);
+            log.error("Error deleting city with ID {}.", id, e);
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateWeather(@PathVariable Long id, @RequestBody City city) {
+        log.info("Data update processing.");
         try {
             if (cityService.findCityByCityName(city.getName()) != null)
                 throw new CityAlreadyExistsException("City already exists!");
@@ -107,13 +112,13 @@ public class CityController {
             city.setId(id);
 
             cityService.complete(id, city);
-            log.info("City with ID {} updated successfully!", id);
+            log.info("City with ID {} updated successfully.", id);
             return ResponseEntity.ok("Updated successfully!");
         } catch (CityAlreadyExistsException e) {
             log.warn("Error updating city with ID {}. {}", id, e.getMessage());
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error updating city with ID {}", id, e);
+            log.error("Error updating city with ID {}.", id, e);
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }

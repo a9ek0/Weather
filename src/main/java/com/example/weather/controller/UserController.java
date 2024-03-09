@@ -32,74 +32,76 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<String> userResponse(@RequestBody User user) {
+        log.info("Data creation processing.");
         try {
             userService.userResponse(user);
-
-            log.info("User was saved successfully!");
+            log.info("User was saved successfully.");
             return ResponseEntity.ok("User was saved successfully!");
         } catch (Exception e) {
-            log.error("Error saving user!");
+            log.error("Error saving user.");
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @PostMapping("/ForWeathers")
     public ResponseEntity<String> createUserForWeathers(@RequestBody User user) {
+        log.info("Data creation processing.");
         try {
-
             List<Weather> weathers = weatherService.getWeatherByCountryCode(user.getCountryCode());
             for (Weather weather : weathers) {
                 if (!weather.getUserList().contains(user)) {
                     weather.getUserList().add(user);
                 }
             }
-
             userService.userResponse(user);
-            log.info("User was created successfully!");
+            log.info("User was created successfully.");
             return ResponseEntity.ok("User was saved successfully!");
         } catch (Exception e) {
-            log.error("Error creating user!");
+            log.error("Error creating user.");
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity getUser(@PathVariable Long id) {
+        log.info("Processing request for data.");
         try {
-            log.info("Processing request for user with ID {}", id);
+            log.info("Processing request for user with ID {}.", id);
             return ResponseEntity.ok(userService.getUser(id));
         } catch (UserNotFoundException e) {
             log.warn("User with ID {} not found. {}", id, e.getMessage());
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error processing request for user with ID {}", id);
+            log.error("Error processing request for user with ID {}.", id);
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
+        log.info("Data deletion processing.");
         try {
-            log.info("Deleting user with ID {}", id);
+            log.info("Deleting user with ID {}.", id);
             userService.delete(id);
-            return ResponseEntity.ok("Deleted successfully!");
+            return ResponseEntity.ok("Deleted successfully.");
         } catch (IdNotFoundException e) {
             log.warn("Error deleting user with ID {}. {}", id, e.getMessage());
             return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            log.error("Error deleting user with ID {}", id, e);
+            log.error("Error deleting user with ID {}.", id, e);
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateWeather(@PathVariable Long id, @RequestBody User user){
+    public ResponseEntity<String> updateWeather(@PathVariable Long id, @RequestBody User user) {
+        log.info("Data update processing.");
         try {
-            log.info("Updating user with ID {}", id);
             userService.complete(id, user);
+            log.info("User with ID {} updated successfully.", id);
             return ResponseEntity.ok("Updated successfully!");
         } catch (Exception e) {
-            log.error("Error updating user with ID {}", id);
+            log.error("Error updating user with ID {}.", id);
             return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
