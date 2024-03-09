@@ -3,6 +3,7 @@ package com.example.weather.service;
 import com.example.weather.dto.UserBasicDTO;
 import com.example.weather.dto.UserDTO;
 import com.example.weather.entity.User;
+import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.UserRepo;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,10 @@ public class UserService {
         return userRepo.findByCountryCode(countryCode);
     }
 
-    public Long delete(Long id) {
+    public Long delete(Long id) throws IdNotFoundException {
+        if(userRepo.findById(id).isEmpty())
+            throw new IdNotFoundException("User with such id not found!");
+
         userRepo.deleteById(id);
         return id;
     }

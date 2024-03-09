@@ -2,6 +2,7 @@ package com.example.weather.service;
 
 import com.example.weather.dto.CityDTO;
 import com.example.weather.entity.City;
+import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.CityRepo;
 import com.example.weather.repository.WeatherRepo;
@@ -45,7 +46,10 @@ public class CityService {
         return null;
     }
 
-    public Long delete(Long id) {
+    public Long delete(Long id) throws IdNotFoundException {
+        if(cityRepo.findById(id).isEmpty())
+            throw new IdNotFoundException("City with such id not found!");
+
         cityRepo.deleteById(id);
         return id;
     }

@@ -1,0 +1,4 @@
+2024-03-09T12:08:05.215+03:00  INFO 46079 --- [http-nio-8080-exec-1] c.e.w.controller.WeatherController       : Processing request for data
+2024-03-09T12:08:05.355+03:00  INFO 46079 --- [http-nio-8080-exec-1] c.e.w.controller.WeatherController       : Data processing successful
+2024-03-09T12:08:15.223+03:00  INFO 46079 --- [http-nio-8080-exec-3] c.e.w.controller.WeatherController       : Processing request for data
+2024-03-09T12:08:15.227+03:00 ERROR 46079 --- [http-nio-8080-exec-3] c.e.w.controller.WeatherController       : Error processing data. City not found!

@@ -2,9 +2,13 @@ package com.example.weather.controller;
 
 import com.example.weather.entity.User;
 import com.example.weather.entity.Weather;
+import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
+import com.example.weather.exception.WeatherExceptionHandler;
 import com.example.weather.service.UserService;
 import com.example.weather.service.WeatherService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,21 +18,28 @@ import java.util.List;
 @RequestMapping("/weather/user")
 public class UserController {
     private static final String ERROR_MESSAGE = "Error occurred!";
+    private static final Logger log = LoggerFactory.getLogger(WeatherController.class);
     private final UserService userService;
     private final WeatherService weatherService;
+    final
+    WeatherExceptionHandler weatherExceptionHandler;
 
-    public UserController(UserService userService, WeatherService weatherService) {
+    public UserController(UserService userService, WeatherService weatherService, WeatherExceptionHandler weatherExceptionHandler) {
         this.userService = userService;
         this.weatherService = weatherService;
+        this.weatherExceptionHandler = weatherExceptionHandler;
     }
 
     @PostMapping
     public ResponseEntity<String> userResponse(@RequestBody User user) {
         try {
             userService.userResponse(user);
+
+            log.info("User was saved successfully!");
             return ResponseEntity.ok("User was saved successfully!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.error("Error saving user!");
+            return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
@@ -44,40 +55,52 @@ public class UserController {
             }
 
             userService.userResponse(user);
+            log.info("User was created successfully!");
             return ResponseEntity.ok("User was saved successfully!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.error("Error creating user!");
+            return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity getUser(@PathVariable Long id) {
         try {
+            log.info("Processing request for user with ID {}", id);
             return ResponseEntity.ok(userService.getUser(id));
         } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.warn("User with ID {} not found. {}", id, e.getMessage());
+            return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
+            log.error("Error processing request for user with ID {}", id);
+            return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
         try {
+            log.info("Deleting user with ID {}", id);
             userService.delete(id);
             return ResponseEntity.ok("Deleted successfully!");
+        } catch (IdNotFoundException e) {
+            log.warn("Error deleting user with ID {}. {}", id, e.getMessage());
+            return weatherExceptionHandler.handleBadRequest(e);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
+            log.error("Error deleting user with ID {}", id, e);
+            return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateWeather(@PathVariable Long id, @RequestBody User user){
         try {
+            log.info("Updating user with ID {}", id);
             userService.complete(id, user);
             return ResponseEntity.ok("Updated successfully!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ERROR_MESSAGE);
+            log.error("Error updating user with ID {}", id);
+            return weatherExceptionHandler.handleInternalServerError(e);
         }
     }
 

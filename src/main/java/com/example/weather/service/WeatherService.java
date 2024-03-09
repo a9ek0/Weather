@@ -2,6 +2,7 @@ package com.example.weather.service;
 
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.CityNotFoundException;
+import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.JsonReadingException;
 import com.example.weather.exception.WeatherNotFoundException;
 import com.example.weather.dto.WeatherDTO;
@@ -52,12 +53,25 @@ public class WeatherService {
         return weathers.stream().map(WeatherDTO::toModel).toList();
     }
 
+    //Realised with query params
+    public List<WeatherDTO> getWeatherDB(String city) throws CityNotFoundException {
+        List<Weather> weathers = weatherRepo.findWeatherByCityName(city);
+
+        if (weathers.isEmpty()) {
+            throw new CityNotFoundException("City not found!");
+        }
+
+        return weathers.stream().map(WeatherDTO::toModel).toList();
+    }
+
     public List<Weather> findWeather(String city) {
         return weatherRepo.findByCityName(city);
     }
 
 
-    public Long delete(Long id) {
+    public Long delete(Long id) throws IdNotFoundException {
+        if(weatherRepo.findById(id).isEmpty())
+            throw new IdNotFoundException("Weather with such id not found!");
         weatherRepo.deleteById(id);
         return id;
     }
