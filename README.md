@@ -8,8 +8,8 @@ This repository contains a simple REST API application that provides weather inf
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
 - [Usage](#usage)
 - [Endpoints](#endpoints)
 - [Configuration](#configuration)
@@ -17,7 +17,9 @@ This repository contains a simple REST API application that provides weather inf
 
 ## Introduction
 
-This is a basic REST API application built using [Spring Boot](https://spring.io/projects/spring-boot) framework. The application allows users to retrieve weather information for a specific city by making HTTP requests to predefined endpoints.
+This is a basic REST API application built using [Spring Boot](https://spring.io/projects/spring-boot) framework. The
+application allows users to retrieve weather information for a specific city by making HTTP requests to predefined
+endpoints.
 
 ## Features
 
@@ -27,7 +29,8 @@ This is a basic REST API application built using [Spring Boot](https://spring.io
 ## Technologies Used
 
 - [Spring Boot](https://spring.io/projects/spring-boot): Web framework for building the REST API.
-- [Spring Data JPA](https://spring.io/projects/spring-data-jpa): Data access framework for interacting with the database.
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa): Data access framework for interacting with the
+  database.
 - [H2 Database](https://www.h2database.com/): Embedded database for local development.
 - [Weatherbit API](https://www.weatherbit.io/): External API for weather data.
 
@@ -67,7 +70,7 @@ The application will start on `http://localhost:8080`.
 ### Endpoints
 
 - **Get Weather by City:**
-  
+
   ```http
   GET /weather/city?city={city_name}
   ```
@@ -81,7 +84,8 @@ The application will start on `http://localhost:8080`.
 
 ### Configuration
 
-The application uses the [Weatherbit API](https://www.weatherbit.io/) to fetch weather data. You need to obtain an API key from Weatherbit and configure it in the `application.properties` file.
+The application uses the [Weatherbit API](https://www.weatherbit.io/) to fetch weather data. You need to obtain an API
+key from Weatherbit and configure it in the `application.properties` file.
 
 ```properties
 # application.properties
@@ -94,4 +98,5 @@ Replace `your-api-key` with your actual Weatherbit API key.
 
 ## Contributing
 
-Contributions are welcome! If you find any issues or have improvements to suggest, feel free to open an issue or create a pull request.
+Contributions are welcome! If you find any issues or have improvements to suggest, feel free to open an issue or create
+a pull request.

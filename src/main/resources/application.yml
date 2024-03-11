@@ -1,9 +1,0 @@
-logging:
-  level:
-    root: WARN
-    com.example.weather.controller.WeatherController: INFO
-    com.example.weather.controller.UserController: INFO
-    com.example.weather.controller.CityController: INFO
-  file:
-    name: weatherLogs
-    path: /

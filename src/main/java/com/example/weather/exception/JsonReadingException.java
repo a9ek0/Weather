@@ -1,5 +1,10 @@
 package com.example.weather.exception;
 
-public class JsonReadingException extends Exception{
-    public JsonReadingException(String message) {super(message);}
+/**
+ * Exception indicating an error during JSON reading.
+ */
+public class JsonReadingException extends Exception {
+  public JsonReadingException(String message) {
+    super(message);
+  }
 }

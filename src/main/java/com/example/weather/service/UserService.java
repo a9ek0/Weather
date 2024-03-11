@@ -1,64 +1,106 @@
 package com.example.weather.service;
 
-import com.example.weather.dto.UserBasicDTO;
-import com.example.weather.dto.UserDTO;
+import com.example.weather.dto.UserBasicDto;
+import com.example.weather.dto.UserDto;
 import com.example.weather.entity.User;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.UserRepo;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+/**
+ * Service class for managing User entities.
+ */
 @Service
 public class UserService {
 
-    private final UserRepo userRepo;
+  private final UserRepo userRepo;
 
-    public UserService(UserRepo userRepo) {
-        this.userRepo = userRepo;
+  public UserService(UserRepo userRepo) {
+    this.userRepo = userRepo;
+  }
+
+  /**
+   * Saves a user entity.
+   *
+   * @param user The user entity to be saved.
+   * @return The saved user entity.
+   */
+  public User userResponse(User user) {
+    return userRepo.save(user);
+  }
+
+  /**
+   * Retrieves a user by its ID and converts it to a UserDto.
+   *
+   * @param id The ID of the user to retrieve.
+   * @return The UserDto corresponding to the retrieved user.
+   * @throws UserNotFoundException If the user with the specified ID is not found.
+   */
+  public UserDto getUser(Long id) throws UserNotFoundException {
+    User user = userRepo.findById(id).get();
+    if (user == null) {
+      throw new UserNotFoundException("User not found!");
     }
+    return UserDto.toModel(user);
+  }
 
-    public User userResponse(User user) {
-        return userRepo.save(user);
+  /**
+   * Finds a user by its ID.
+   *
+   * @param userId The ID of the user to find.
+   * @return The found user entity or null if not found.
+   */
+  public User findUserById(Long userId) {
+    if (userId != null) {
+      return userRepo.findById(userId).get();
     }
+    return null;
+  }
 
-    public UserDTO getUser(Long id) throws UserNotFoundException {
-        User user = userRepo.findById(id).get();
-        if (user == null) {
-            throw new UserNotFoundException("User not found!");
-        }
-        return UserDTO.toModel(user);
+  /**
+   * Retrieves all users with a specified country code.
+   *
+   * @param countryCode The country code to filter users by.
+   * @return A list of users with the specified country code.
+   */
+  public List<User> getAllUsers(String countryCode) {
+    return userRepo.findByCountryCode(countryCode);
+  }
+
+  /**
+   * Deletes a user by its ID.
+   *
+   * @param id The ID of the user to delete.
+   * @return The ID of the deleted user.
+   * @throws IdNotFoundException If the user with the specified ID is not found.
+   */
+  public Long delete(Long id) throws IdNotFoundException {
+    if (userRepo.findById(id).isEmpty()) {
+      throw new IdNotFoundException("User with such id not found!");
     }
+    userRepo.deleteById(id);
+    return id;
+  }
 
-    public User findUserById(Long userId) {
-        if (userId != null)
-            return userRepo.findById(userId).get();
-        return null;
+  /**
+   * Updates a user entity.
+   *
+   * @param id          The ID of the user to update.
+   * @param updatedUser The updated user entity.
+   * @return The updated user as a UserBasicDto.
+   */
+  public UserBasicDto complete(Long id, User updatedUser) {
+    User user = userRepo.findById(id).get();
+
+    user.setCountryCode(updatedUser.getCountryCode());
+    user.setEmail(updatedUser.getEmail());
+    user.setName(updatedUser.getName());
+    if (!updatedUser.getWeatherList().isEmpty()) {
+      user.setWeatherList(updatedUser.getWeatherList());
     }
-
-    public List<User> getAllUsers(String countryCode) {
-        return userRepo.findByCountryCode(countryCode);
-    }
-
-    public Long delete(Long id) throws IdNotFoundException {
-        if(userRepo.findById(id).isEmpty())
-            throw new IdNotFoundException("User with such id not found!");
-
-        userRepo.deleteById(id);
-        return id;
-    }
-
-    public UserBasicDTO complete(Long id, User updatedUser) {
-        User user = userRepo.findById(id).get();
-
-        user.setCountryCode(updatedUser.getCountryCode());
-        user.setEmail(updatedUser.getEmail());
-        user.setName(updatedUser.getName());
-        if(!updatedUser.getWeatherList().isEmpty())
-            user.setWeatherList(updatedUser.getWeatherList());
-
-        return UserBasicDTO.toModel(userRepo.save(user));
-    }
+    return UserBasicDto.toModel(userRepo.save(user));
+  }
 
 }

@@ -1,5 +1,10 @@
 package com.example.weather.exception;
 
-public class UserNotFoundException extends Exception{
-    public UserNotFoundException(String message) {super(message);}
+/**
+ * Exception class indicating that a user was not found.
+ */
+public class UserNotFoundException extends Exception {
+  public UserNotFoundException(String message) {
+    super(message);
+  }
 }
