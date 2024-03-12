@@ -31,3 +31,96 @@
 2024-03-12 10:21:08,907 WARN  - 400 Bad Request - 207 City not found!
 2024-03-12 10:27:56,092 INFO  - get endpoint /db/{city} was called
 2024-03-12 10:27:56,160 WARN  - 400 Bad Request - city not found
+2024-03-12 12:23:17,190 ERROR - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+
+2024-03-12 12:25:22,795 INFO  - get endpoint /db/{city} was called
+2024-03-12 12:25:23,396 WARN  - 400 Bad Request - city not found
+2024-03-12 12:25:30,425 INFO  - get endpoint /db/{city} was called
+2024-03-12 12:25:30,556 INFO  - weather information retrieved successfully.
+2024-03-12 12:32:10,152 INFO  - Data update processing.
+2024-03-12 12:32:10,340 INFO  - Processing request for data.
+2024-03-12 12:32:10,340 INFO  - City with ID 552 saved successfully.
+2024-03-12 12:32:10,422 INFO  - Data creation processing.
+2024-03-12 12:32:10,435 INFO  - Data deletion processing.
+2024-03-12 12:32:10,435 INFO  - Deleting city with ID 1802.
+2024-03-12 12:32:10,444 WARN  - 400 Bad Request - city with such id not found
+2024-03-12 12:32:10,468 INFO  - Data creation processing.
+2024-03-12 12:32:10,537 INFO  - User was created successfully.
+2024-03-12 12:32:10,547 INFO  - Data update processing.
+2024-03-12 12:32:10,703 INFO  - User with ID 2852 updated successfully.
+2024-03-12 12:32:10,713 INFO  - Processing request for data.
+2024-03-12 12:32:10,713 INFO  - Processing request for user with ID 2402.
+2024-03-12 12:32:10,834 INFO  - Data deletion processing.
+2024-03-12 12:32:10,834 INFO  - Deleting user with ID 2752.
+2024-03-12 12:32:10,838 WARN  - 400 Bad Request - user with such id not found
+2024-03-12 12:32:10,850 INFO  - Data creation processing.
+2024-03-12 12:32:10,857 INFO  - User was saved successfully.
+2024-03-12 12:32:10,876 WARN  - 404 Not Found - No static resource weather/2252.
+2024-03-12 12:32:10,891 INFO  - get endpoint /db/{city} was called
+2024-03-12 12:32:10,990 INFO  - weather information retrieved successfully.
+2024-03-12 12:32:11,027 INFO  - get endpoint /city was called
+2024-03-12 12:32:11,594 WARN  - 400 Bad Request - 403 Forbidden: "{"error":"API key not valid, or not yet activated. If you recently signed up for an account or created this key, please allow up to 30 minutes for key to activate."}<EOL>"
+2024-03-12 12:32:11,685 INFO  - post endpoint /weather was called
+2024-03-12 12:32:11,689 INFO  - weather was created successfully
+2024-03-12 13:08:57,503 INFO  - Data update processing.
+2024-03-12 13:08:57,705 INFO  - Processing request for data.
+2024-03-12 13:08:57,705 INFO  - City with ID 552 saved successfully.
+2024-03-12 13:08:57,784 INFO  - Data creation processing.
+2024-03-12 13:08:57,798 INFO  - Data deletion processing.
+2024-03-12 13:08:57,798 INFO  - Deleting city with ID 1802.
+2024-03-12 13:08:57,809 WARN  - 400 Bad Request - city with such id not found
+2024-03-12 13:08:57,837 INFO  - Data creation processing.
+2024-03-12 13:08:57,916 INFO  - User was created successfully.
+2024-03-12 13:08:57,927 INFO  - Data update processing.
+2024-03-12 13:08:58,090 INFO  - User with ID 2852 updated successfully.
+2024-03-12 13:08:58,097 INFO  - Processing request for data.
+2024-03-12 13:08:58,098 INFO  - Processing request for user with ID 2402.
+2024-03-12 13:08:58,223 INFO  - Data deletion processing.
+2024-03-12 13:08:58,224 INFO  - Deleting user with ID 2752.
+2024-03-12 13:08:58,228 WARN  - 400 Bad Request - user with such id not found
+2024-03-12 13:08:58,243 INFO  - Data creation processing.
+2024-03-12 13:08:58,250 INFO  - User was saved successfully.
+2024-03-12 13:08:58,268 WARN  - 404 Not Found - No static resource weather/2252.
+2024-03-12 13:08:58,287 INFO  - get endpoint /db/{city} was called
+2024-03-12 13:08:58,403 INFO  - weather information retrieved successfully.
+2024-03-12 13:08:58,451 INFO  - get endpoint /city was called
+2024-03-12 13:08:58,790 WARN  - 400 Bad Request - 403 Forbidden: "{"error":"API key not valid, or not yet activated. If you recently signed up for an account or created this key, please allow up to 30 minutes for key to activate."}<EOL>"
+2024-03-12 13:08:58,910 INFO  - post endpoint /weather was called
+2024-03-12 13:08:58,913 INFO  - weather was created successfully
+2024-03-12 13:35:59,899 INFO  - Data update processing.
+2024-03-12 13:36:00,174 INFO  - Processing request for data.
+2024-03-12 13:36:00,174 INFO  - City with ID 552 saved successfully.
+2024-03-12 13:36:00,276 INFO  - Data creation processing.
+2024-03-12 13:36:00,291 INFO  - Data deletion processing.
+2024-03-12 13:36:00,291 INFO  - Deleting city with ID 1802.
+2024-03-12 13:36:00,303 WARN  - 400 Bad Request - city with such id not found
+2024-03-12 13:36:00,332 INFO  - Data creation processing.
+2024-03-12 13:36:00,434 INFO  - User was created successfully.
+2024-03-12 13:36:00,444 INFO  - Data update processing.
+2024-03-12 13:36:00,574 INFO  - User with ID 2852 updated successfully.
+2024-03-12 13:36:00,581 INFO  - Processing request for data.
+2024-03-12 13:36:00,581 INFO  - Processing request for user with ID 2402.
+2024-03-12 13:36:00,674 INFO  - Data deletion processing.
+2024-03-12 13:36:00,675 INFO  - Deleting user with ID 2752.
+2024-03-12 13:36:00,678 WARN  - 400 Bad Request - user with such id not found
+2024-03-12 13:36:00,689 INFO  - Data creation processing.
+2024-03-12 13:36:00,696 INFO  - User was saved successfully.
+2024-03-12 13:36:00,715 WARN  - 404 Not Found - No static resource weather/2252.
+2024-03-12 13:36:00,729 INFO  - get endpoint /db/{city} was called
+2024-03-12 13:36:00,812 INFO  - weather information retrieved successfully.
+2024-03-12 13:36:00,846 INFO  - get endpoint /city was called
+2024-03-12 13:36:01,209 WARN  - 400 Bad Request - 403 Forbidden: "{"error":"API key not valid, or not yet activated. If you recently signed up for an account or created this key, please allow up to 30 minutes for key to activate."}<EOL>"
+2024-03-12 13:36:01,366 INFO  - post endpoint /weather was called
+2024-03-12 13:36:01,371 INFO  - weather was created successfully
