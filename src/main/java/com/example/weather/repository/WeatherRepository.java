@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repository interface for Weather entity, providing CRUD operations and custom queries.
  */
-public interface WeatherRepo extends CrudRepository<Weather, Long> {
+@Repository
+public interface WeatherRepository extends CrudRepository<Weather, Long> {
 
   List<Weather> findByCityName(String cityName);
 

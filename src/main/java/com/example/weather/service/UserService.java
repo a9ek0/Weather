@@ -5,7 +5,7 @@ import com.example.weather.dto.UserDto;
 import com.example.weather.entity.User;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
-import com.example.weather.repository.UserRepo;
+import com.example.weather.repository.UserRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-  private final UserRepo userRepo;
+  private final UserRepository userRepository;
 
-  public UserService(UserRepo userRepo) {
-    this.userRepo = userRepo;
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
   }
 
   /**
@@ -28,7 +28,7 @@ public class UserService {
    * @return The saved user entity.
    */
   public User userResponse(User user) {
-    return userRepo.save(user);
+    return userRepository.save(user);
   }
 
   /**
@@ -39,9 +39,9 @@ public class UserService {
    * @throws UserNotFoundException If the user with the specified ID is not found.
    */
   public UserDto getUser(Long id) throws UserNotFoundException {
-    User user = userRepo.findById(id).get();
+    User user = userRepository.findById(id).get();
     if (user == null) {
-      throw new UserNotFoundException("User not found!");
+      throw new UserNotFoundException("user not found");
     }
     return UserDto.toModel(user);
   }
@@ -54,7 +54,7 @@ public class UserService {
    */
   public User findUserById(Long userId) {
     if (userId != null) {
-      return userRepo.findById(userId).get();
+      return userRepository.findById(userId).get();
     }
     return null;
   }
@@ -66,7 +66,7 @@ public class UserService {
    * @return A list of users with the specified country code.
    */
   public List<User> getAllUsers(String countryCode) {
-    return userRepo.findByCountryCode(countryCode);
+    return userRepository.findByCountryCode(countryCode);
   }
 
   /**
@@ -77,10 +77,10 @@ public class UserService {
    * @throws IdNotFoundException If the user with the specified ID is not found.
    */
   public Long delete(Long id) throws IdNotFoundException {
-    if (userRepo.findById(id).isEmpty()) {
-      throw new IdNotFoundException("User with such id not found!");
+    if (userRepository.findById(id).isEmpty()) {
+      throw new IdNotFoundException("user with such id not found");
     }
-    userRepo.deleteById(id);
+    userRepository.deleteById(id);
     return id;
   }
 
@@ -92,7 +92,7 @@ public class UserService {
    * @return The updated user as a UserBasicDto.
    */
   public UserBasicDto complete(Long id, User updatedUser) {
-    User user = userRepo.findById(id).get();
+    User user = userRepository.findById(id).get();
 
     user.setCountryCode(updatedUser.getCountryCode());
     user.setEmail(updatedUser.getEmail());
@@ -100,7 +100,7 @@ public class UserService {
     if (!updatedUser.getWeatherList().isEmpty()) {
       user.setWeatherList(updatedUser.getWeatherList());
     }
-    return UserBasicDto.toModel(userRepo.save(user));
+    return UserBasicDto.toModel(userRepository.save(user));
   }
 
 }

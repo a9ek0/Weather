@@ -1,0 +1,33 @@
+2024-03-12 09:54:37,643 INFO  - get endpoint /db/{city} was called
+2024-03-12 09:54:37,677 WARN  - error processing data. City not found!
+2024-03-12 09:57:30,203 INFO  - get endpoint /db/{city} was called
+2024-03-12 09:57:30,274 INFO  - weather information retrieved successfully.
+2024-03-12 09:57:38,328 INFO  - get endpoint /db/{city} was called
+2024-03-12 09:59:17,011 INFO  - get endpoint /db/{city} was called
+2024-03-12 09:59:17,152 INFO  - weather information retrieved successfully.
+2024-03-12 09:59:23,054 WARN  - 404 Not Found - No static resource weather/db/Moscow.
+2024-03-12 10:02:04,290 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:02:04,634 WARN  - error processing data. City not found!
+2024-03-12 10:03:50,067 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:04:34,391 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:04:50,839 INFO  - get endpoint /useful was called
+2024-03-12 10:04:50,849 WARN  - error processing data. City not found!
+2024-03-12 10:06:44,068 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:07:18,991 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:07:19,085 INFO  - weather information retrieved successfully.
+2024-03-12 10:10:09,076 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:10:27,861 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:10:35,350 WARN  - 404 Not Found - No static resource weather/db/Moscow.
+2024-03-12 10:11:06,525 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:11:56,084 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:13:27,358 ERROR - 500 Internal Server Error - JSON parse error: Unexpected character ('}' (code 125)): was expecting double-quote to start field name
+2024-03-12 10:15:31,424 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:15:31,583 INFO  - weather information retrieved successfully.
+2024-03-12 10:15:36,413 WARN  - 404 Not Found - No static resource weather/db/Moscow.
+2024-03-12 10:15:40,901 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:18:31,317 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:18:31,391 WARN  - 400 Bad Request - 400 City not found!
+2024-03-12 10:21:08,844 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:21:08,907 WARN  - 400 Bad Request - 207 City not found!
+2024-03-12 10:27:56,092 INFO  - get endpoint /db/{city} was called
+2024-03-12 10:27:56,160 WARN  - 400 Bad Request - city not found

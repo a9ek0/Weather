@@ -2,7 +2,6 @@ package com.example.weather.controller;
 
 import com.example.weather.entity.City;
 import com.example.weather.entity.Weather;
-import com.example.weather.exception.CityAlreadyExistsException;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.exception.WeatherExceptionHandler;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * Controller class for managing City-related API endpoints.
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/weather/city")
 public class CityController {
   private static final Logger log = LoggerFactory.getLogger(CityController.class);
-  private static final String ERROR_MESSAGE = "Error occurred!";
   final WeatherService weatherService;
   final CityService cityService;
   final WeatherExceptionHandler weatherExceptionHandler;
@@ -60,7 +60,7 @@ public class CityController {
     log.info("Data creation processing.");
     try {
       if (cityService.findCityByCityName(city.getName()) != null) {
-        throw new CityAlreadyExistsException("City already exists!");
+        return ResponseEntity.badRequest().body("City already exists!");
       }
 
       List<Weather> weathers = weatherService.findWeather(city.getName());
@@ -73,8 +73,7 @@ public class CityController {
       log.info("City {} was saved successfully.", city.getName());
       return ResponseEntity.ok("City was saved successfully!");
     } catch (Exception e) {
-      log.error("Error saving city.");
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
   }
 
@@ -91,11 +90,9 @@ public class CityController {
       log.info("City with ID {} saved successfully.", id);
       return ResponseEntity.ok(cityService.getCity(id));
     } catch (UserNotFoundException e) {
-      log.warn("City with ID {} not found. {}", id, e.getMessage());
-      return weatherExceptionHandler.handleBadRequest(e);
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     } catch (Exception e) {
-      log.error("Error processing request for city with ID {}.", id);
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -114,11 +111,9 @@ public class CityController {
       log.info("City with ID {} deleted successfully.", id);
       return ResponseEntity.ok("Deleted successfully!");
     } catch (IdNotFoundException e) {
-      log.warn("Error deleting city with ID {}. {}", id, e.getMessage());
-      return weatherExceptionHandler.handleBadRequest(e);
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     } catch (Exception e) {
-      log.error("Error deleting city with ID {}.", id, e);
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -134,7 +129,7 @@ public class CityController {
     log.info("Data update processing.");
     try {
       if (cityService.findCityByCityName(city.getName()) != null) {
-        throw new CityAlreadyExistsException("City already exists!");
+        return ResponseEntity.badRequest().body("City already exists!");
       }
 
       List<Weather> weathers = weatherService.findWeather(cityService.findCityById(id).getName());
@@ -155,12 +150,8 @@ public class CityController {
       cityService.complete(id, city);
       log.info("City with ID {} updated successfully.", id);
       return ResponseEntity.ok("Updated successfully!");
-    } catch (CityAlreadyExistsException e) {
-      log.warn("Error updating city with ID {}. {}", id, e.getMessage());
-      return weatherExceptionHandler.handleBadRequest(e);
     } catch (Exception e) {
-      log.error("Error updating city with ID {}.", id, e);
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 }

@@ -1,12 +1,14 @@
 package com.example.weather.service;
 
 import com.example.weather.dto.WeatherDto;
+import com.example.weather.entity.City;
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.JsonReadingException;
 import com.example.weather.exception.WeatherNotFoundException;
-import com.example.weather.repository.WeatherRepo;
+import com.example.weather.repository.CityRepo;
+import com.example.weather.repository.WeatherRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,18 +26,20 @@ public class WeatherService {
 
   private final ObjectMapper objectMapper;
 
-  private final WeatherRepo weatherRepo;
+  final CityRepo cityRepo;
+  private final WeatherRepository weatherRepository;
 
   /**
    * Constructor for the WeatherService class.
    *
    * @param objectMapper ObjectMapper for handling JSON.
-   * @param weatherRepo  Weather repository for data access.
+   * @param weatherRepository  Weather repository for data access.
    */
   @Autowired
-  public WeatherService(ObjectMapper objectMapper, WeatherRepo weatherRepo) {
+  public WeatherService(ObjectMapper objectMapper, WeatherRepository weatherRepository, CityRepo cityRepo) {
     this.objectMapper = objectMapper;
-    this.weatherRepo = weatherRepo;
+    this.weatherRepository = weatherRepository;
+    this.cityRepo = cityRepo;
   }
 
   /**
@@ -45,7 +49,7 @@ public class WeatherService {
    * @return Saved Weather object.
    */
   public Weather weatherResponse(Weather weather) {
-    return weatherRepo.save(weather);
+    return weatherRepository.save(weather);
   }
 
   /**
@@ -56,7 +60,7 @@ public class WeatherService {
    * @throws WeatherNotFoundException if the Weather object is not found.
    */
   public WeatherDto getWeather(Long id) throws WeatherNotFoundException {
-    Weather weather = weatherRepo.findById(id).get();
+    Weather weather = weatherRepository.findById(id).get();
     if (weather == null) {
       throw new WeatherNotFoundException("Weather not found!");
     }
@@ -71,10 +75,10 @@ public class WeatherService {
    * @throws CityNotFoundException if the city is not found.
    */
   public List<WeatherDto> getWeather(String city) throws CityNotFoundException {
-    List<Weather> weathers = weatherRepo.findByCityName(city);
+    List<Weather> weathers = weatherRepository.findByCityName(city);
 
     if (weathers.isEmpty()) {
-      throw new CityNotFoundException("City not found!");
+      throw new CityNotFoundException("city not found");
     }
 
     return weathers.stream().map(WeatherDto::toModel).toList();
@@ -88,17 +92,17 @@ public class WeatherService {
    * @throws CityNotFoundException if the city is not found.
    */
   public List<WeatherDto> getWeatherDb(String city) throws CityNotFoundException {
-    List<Weather> weathers = weatherRepo.findWeatherByCityName(city);
+    List<Weather> weathers = weatherRepository.findWeatherByCityName(city);
 
     if (weathers.isEmpty()) {
-      throw new CityNotFoundException("City not found!");
+      throw new CityNotFoundException("city not found");
     }
 
     return weathers.stream().map(WeatherDto::toModel).toList();
   }
 
   public List<Weather> findWeather(String city) {
-    return weatherRepo.findByCityName(city);
+    return weatherRepository.findByCityName(city);
   }
 
 
@@ -110,10 +114,10 @@ public class WeatherService {
    * @throws IdNotFoundException if the Weather object with the specified ID is not found.
    */
   public Long delete(Long id) throws IdNotFoundException {
-    if (weatherRepo.findById(id).isEmpty()) {
-      throw new IdNotFoundException("Weather with such id not found!");
+    if (weatherRepository.findById(id).isEmpty()) {
+      throw new IdNotFoundException("weather with such id not found");
     }
-    weatherRepo.deleteById(id);
+    weatherRepository.deleteById(id);
     return id;
   }
 
@@ -128,7 +132,7 @@ public class WeatherService {
       return objectMapper.readValue(jsonResponse, Weather.class);
     } catch (Exception e) {
       Logger logger = Logger.getLogger(getClass().getName());
-      logger.info("Error occurred!");
+      logger.info("error occurred");
       return null;
     }
   }
@@ -149,7 +153,7 @@ public class WeatherService {
     try {
       jsonNode = objectMapper.readTree(jsonString);
     } catch (JsonProcessingException e) {
-      throw new JsonReadingException("Json reading error!");
+      throw new JsonReadingException("json reading error");
     }
     JsonNode dataNode = jsonNode.get("data").get(0);
 
@@ -163,7 +167,7 @@ public class WeatherService {
    * @return List of Weather objects.
    */
   public List<Weather> getWeatherByCountryCode(String countryCode) {
-    return weatherRepo.findByCountryCode(countryCode);
+    return weatherRepository.findByCountryCode(countryCode);
   }
 
   /**
@@ -174,7 +178,7 @@ public class WeatherService {
    * @return Updated WeatherDto object.
    */
   public WeatherDto complete(Long id, Weather updatedWeather) {
-    Weather weather = weatherRepo.findById(id).get();
+    Weather weather = weatherRepository.findById(id).get();
 
     weather.setCountryCode(updatedWeather.getCountryCode());
     weather.setTemp(updatedWeather.getTemp());
@@ -184,6 +188,42 @@ public class WeatherService {
     weather.setCityName(updatedWeather.getCityName());
     weather.setUserList(updatedWeather.getUserList());
 
-    return WeatherDto.toModel(weatherRepo.save(weather));
+    return WeatherDto.toModel(weatherRepository.save(weather));
   }
+
+  public Weather createWeather(Weather weather, String cityName) throws WeatherNotFoundException, CityNotFoundException {
+    if (weather == null) {
+      throw new WeatherNotFoundException("weather not found");
+    }
+    City city = cityRepo.findByName(cityName);
+    if(city != null) {
+      weather.setCity(city);
+      return weatherRepository.save(weather);
+    } else {
+      throw new CityNotFoundException("city not found");
+    }
+  }
+
+  public void createWeatherBulk(List<Weather> weatherList, String cityName) throws Exception {
+    if (weatherList == null || weatherList.isEmpty()) {
+      throw new WeatherNotFoundException("weather not found");
+    }
+
+    List<String> errors = weatherList.stream()
+            .map(weather -> {
+              try {
+                createWeather(weather, cityName);
+                return null;
+              } catch (Exception e) {
+                return "Error creating weather: " + e.getMessage();
+              }
+            })
+            .filter(error -> error != null)
+            .toList();
+
+    if (!errors.isEmpty()) {
+      throw new Exception("Errors occurred during bulk creation:\n" + String.join("\n", errors));
+    }
+  }
+
 }

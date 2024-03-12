@@ -5,7 +5,7 @@ import com.example.weather.entity.City;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.CityRepo;
-import com.example.weather.repository.WeatherRepo;
+import com.example.weather.repository.WeatherRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,11 +17,11 @@ public class CityService {
 
   final CityRepo cityRepo;
 
-  final WeatherRepo weatherRepo;
+  final WeatherRepository weatherRepository;
 
-  public CityService(CityRepo cityRepo, WeatherRepo weatherRepo) {
+  public CityService(CityRepo cityRepo, WeatherRepository weatherRepository) {
     this.cityRepo = cityRepo;
-    this.weatherRepo = weatherRepo;
+    this.weatherRepository = weatherRepository;
   }
 
   /**
@@ -44,7 +44,7 @@ public class CityService {
   public CityDto getCity(Long id) throws UserNotFoundException {
     City city = cityRepo.findById(id).get();
     if (city == null) {
-      throw new UserNotFoundException("User not found!");
+      throw new UserNotFoundException("user not found");
     }
     return CityDto.toModel(city);
   }
@@ -84,7 +84,7 @@ public class CityService {
    */
   public Long delete(Long id) throws IdNotFoundException {
     if (cityRepo.findById(id).isEmpty()) {
-      throw new IdNotFoundException("City with such id not found!");
+      throw new IdNotFoundException("city with such id not found");
     }
     cityRepo.deleteById(id);
     return id;

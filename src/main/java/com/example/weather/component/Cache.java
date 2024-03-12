@@ -22,12 +22,10 @@ public class Cache<K, V> {
   };
 
   public V get(K key) {
-    System.out.println("get");
     return weatherCache.get(key);
   }
 
   public void put(K key, V value) {
-    System.out.println("put");
     weatherCache.put(key, value);
   }
 
@@ -43,26 +41,3 @@ public class Cache<K, V> {
     weatherCache.clear();
   }
 }
-/*public class Cache {
-    private final Map<String, Object> weatherCache = new HashMap<>();
-
-    public Object get(String key) {
-        return weatherCache.get(key);
-    }
-
-    public void put(String key, Object value) {
-        weatherCache.put(key, value);
-    }
-
-    public boolean containsKey(String key) {
-        return weatherCache.containsKey(key);
-    }
-
-    public void evict(String key) {
-        weatherCache.remove(key);
-    }
-
-    public void clear() {
-        weatherCache.clear();
-    }
-}*/

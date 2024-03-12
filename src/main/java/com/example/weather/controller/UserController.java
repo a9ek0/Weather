@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * Controller class for managing User-related operations.
@@ -26,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/weather/user")
 public class UserController {
-  private static final String ERROR_MESSAGE = "Error occurred!";
   private static final Logger log = LoggerFactory.getLogger(UserController.class);
   private final UserService userService;
   private final WeatherService weatherService;
@@ -61,8 +62,7 @@ public class UserController {
       log.info("User was saved successfully.");
       return ResponseEntity.ok("User was saved successfully!");
     } catch (Exception e) {
-      log.error("Error saving user.");
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
   }
 
@@ -86,8 +86,7 @@ public class UserController {
       log.info("User was created successfully.");
       return ResponseEntity.ok("User was saved successfully!");
     } catch (Exception e) {
-      log.error("Error creating user.");
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
   }
 
@@ -104,11 +103,9 @@ public class UserController {
       log.info("Processing request for user with ID {}.", id);
       return ResponseEntity.ok(userService.getUser(id));
     } catch (UserNotFoundException e) {
-      log.warn("User with ID {} not found. {}", id, e.getMessage());
-      return weatherExceptionHandler.handleBadRequest(e);
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     } catch (Exception e) {
-      log.error("Error processing request for user with ID {}.", id);
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -126,11 +123,9 @@ public class UserController {
       userService.delete(id);
       return ResponseEntity.ok("Deleted successfully.");
     } catch (IdNotFoundException e) {
-      log.warn("Error deleting user with ID {}. {}", id, e.getMessage());
-      return weatherExceptionHandler.handleBadRequest(e);
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     } catch (Exception e) {
-      log.error("Error deleting user with ID {}.", id, e);
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
@@ -149,8 +144,7 @@ public class UserController {
       log.info("User with ID {} updated successfully.", id);
       return ResponseEntity.ok("Updated successfully!");
     } catch (Exception e) {
-      log.error("Error updating user with ID {}.", id);
-      return weatherExceptionHandler.handleInternalServerError(e);
+      throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
