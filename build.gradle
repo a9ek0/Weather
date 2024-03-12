@@ -39,10 +39,26 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.30'
     implementation 'joda-time:joda-time:2.2'
     runtimeOnly 'mysql:mysql-connector-java'
+
+
+
+}
+
+jacoco {
+    toolVersion = "0.8.11"
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
 }
 
 checkstyle {
@@ -58,6 +74,5 @@ jacocoTestReport {
 sonarqube {
     properties {
         property 'sonar.gradle.skipCompile', 'true'
-        property 'sonar.host.url', 'http://localhost:9090'
     }
 }
