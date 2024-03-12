@@ -54,3 +54,10 @@ jacocoTestReport {
         xml.required = true
     }
 }
+
+sonarqube {
+    properties {
+        property 'sonar.gradle.skipCompile', 'true'
+        property 'sonar.host.url', 'http://localhost:9090'
+    }
+}
