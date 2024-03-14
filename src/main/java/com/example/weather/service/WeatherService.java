@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -65,7 +66,9 @@ public class WeatherService {
    * @throws WeatherNotFoundException if the Weather object is not found.
    */
   public WeatherDto getWeather(Long id) throws WeatherNotFoundException {
-    Weather weather = weatherRepository.findById(id).get();
+    Optional<Weather> optionalWeather = weatherRepository.findById(id);
+    Weather weather = optionalWeather.orElseThrow(() -> new WeatherNotFoundException("Weather not found"));
+
     if (weather == null) {
       throw new WeatherNotFoundException("Weather not found!");
     }
@@ -182,8 +185,10 @@ public class WeatherService {
    * @param updatedWeather Updated Weather object.
    * @return Updated WeatherDto object.
    */
-  public WeatherDto complete(Long id, Weather updatedWeather) {
-    Weather weather = weatherRepository.findById(id).get();
+  public WeatherDto complete(Long id, Weather updatedWeather) throws WeatherNotFoundException {
+    Optional<Weather> optionalWeather = weatherRepository.findById(id);
+    Weather weather = optionalWeather.orElseThrow(() -> new WeatherNotFoundException("Weather not found"));
+
 
     if (updatedWeather.getCountryCode() != null) {
       weather.setCountryCode(updatedWeather.getCountryCode());

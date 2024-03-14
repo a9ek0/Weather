@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Service class for managing City entities.
  * Provides methods for handling CRUD operations on City entities.
@@ -20,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class CityService {
 
   final CityRepo cityRepo;
-
+  static final String CITY_NOT_FOUND = "City not found";
   final WeatherRepository weatherRepository;
 
   public CityService(CityRepo cityRepo, WeatherRepository weatherRepository) {
@@ -46,7 +48,8 @@ public class CityService {
    * @throws UserNotFoundException If the City entity is not found.
    */
   public CityDto getCity(Long id) throws CityNotFoundException {
-    City city = cityRepo.findById(id).get();
+    Optional<City> optionalCity = cityRepo.findById(id);
+    City city = optionalCity.orElseThrow(() -> new CityNotFoundException(CITY_NOT_FOUND));
     if (city == null) {
       throw new CityNotFoundException("city not found");
     }
@@ -61,9 +64,10 @@ public class CityService {
    * @param cityId The ID of the City entity.
    * @return The City entity if found, or null if not found.
    */
-  public City findCityById(Long cityId) {
+  public City findCityById(Long cityId) throws CityNotFoundException {
     if (cityId != null) {
-      return cityRepo.findById(cityId).get();
+      Optional<City> optionalCity = cityRepo.findById(cityId);
+      return optionalCity.orElseThrow(() -> new CityNotFoundException(CITY_NOT_FOUND));
     }
     return null;
   }
@@ -105,8 +109,9 @@ public class CityService {
    * @param updatedCity  The updated City entity.
    * @return The updated CityDto.
    */
-  public CityDto complete(Long id, City updatedCity) {
-    City city = cityRepo.findById(id).get();
+  public CityDto complete(Long id, City updatedCity) throws CityNotFoundException {
+    Optional<City> optionalCity = cityRepo.findById(id);
+    City city = optionalCity.orElseThrow(() -> new CityNotFoundException(CITY_NOT_FOUND));
 
     city.setName(updatedCity.getName());
     if (!updatedCity.getWeatherList().isEmpty()) {

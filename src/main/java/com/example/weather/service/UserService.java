@@ -7,6 +7,8 @@ import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final UserRepository userRepository;
-
+  static final String USER_NOT_FOUND = "User not found";
   public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
@@ -39,7 +41,9 @@ public class UserService {
    * @throws UserNotFoundException If the user with the specified ID is not found.
    */
   public UserDto getUser(Long id) throws UserNotFoundException {
-    User user = userRepository.findById(id).get();
+    Optional<User> optionalUser = userRepository.findById(id);
+    User user = optionalUser.orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
     if (user == null) {
       throw new UserNotFoundException("user not found");
     }
@@ -52,9 +56,10 @@ public class UserService {
    * @param userId The ID of the user to find.
    * @return The found user entity or null if not found.
    */
-  public User findUserById(Long userId) {
+  public User findUserById(Long userId) throws UserNotFoundException {
     if (userId != null) {
-      return userRepository.findById(userId).get();
+      Optional<User> optionalUser = userRepository.findById(userId);
+      return optionalUser.orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
     return null;
   }
@@ -91,8 +96,9 @@ public class UserService {
    * @param updatedUser The updated user entity.
    * @return The updated user as a UserBasicDto.
    */
-  public UserBasicDto complete(Long id, User updatedUser) {
-    User user = userRepository.findById(id).get();
+  public UserBasicDto complete(Long id, User updatedUser) throws UserNotFoundException {
+    Optional<User> optionalUser = userRepository.findById(id);
+    User user = optionalUser.orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
     user.setCountryCode(updatedUser.getCountryCode());
     user.setEmail(updatedUser.getEmail());

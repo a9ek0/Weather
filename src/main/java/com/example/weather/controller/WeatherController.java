@@ -186,10 +186,8 @@ public class WeatherController {
       Weather weatherEntity = weatherService.processApiUrl(apiUrl);
 
       City city = cityService.findCityByCityName(cityName);
-      if (city != null) {
-        city.getWeatherList().add(weatherEntity);
-        weatherEntity.setCity(city);
-      }
+      city.getWeatherList().add(weatherEntity);
+      weatherEntity.setCity(city);
 
       List<User> users = userService.getAllUsers(weatherEntity.getCountryCode());
       for (User user : users) {
