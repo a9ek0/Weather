@@ -40,8 +40,6 @@ dependencies {
     implementation 'joda-time:joda-time:2.2'
     runtimeOnly 'mysql:mysql-connector-java'
 
-
-
 }
 
 test {

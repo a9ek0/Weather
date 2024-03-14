@@ -9,13 +9,16 @@ import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.WeatherExceptionHandler;
 import com.example.weather.service.CityService;
+import com.example.weather.service.RequestCounterService;
 import com.example.weather.service.UserService;
 import com.example.weather.service.WeatherService;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.List;
-
 /**
  * Controller class responsible for handling weather-related operations.
  */
@@ -38,8 +39,11 @@ public class WeatherController {
 
   @Value("${weatherbit.api-key}")
   private String apiKey;
+  private static final String GETTING_SUCCESS = "weather information " +
+                                                "retrieved successfully";
   private static final Logger log = LoggerFactory.getLogger(WeatherController.class);
   final Cache<String, List<WeatherDto>> cache;
+  final RequestCounterService requestCounterService;
   final WeatherExceptionHandler weatherExceptionHandler;
   final CityService cityService;
   private final WeatherService weatherService;
@@ -58,32 +62,29 @@ public class WeatherController {
                            CityService cityService,
                            UserService userService,
                            Cache<String, List<WeatherDto>> cache,
-                           WeatherExceptionHandler weatherExceptionHandler) {
+                           WeatherExceptionHandler weatherExceptionHandler,
+                           RequestCounterService requestCounterService) {
     this.weatherService = weatherService;
     this.cityService = cityService;
     this.userService = userService;
     this.cache = cache;
     this.weatherExceptionHandler = weatherExceptionHandler;
+    this.requestCounterService = requestCounterService;
   }
 
   /**
-   * Handles the creation of weather data.
+   * Creates multiple weather records in bulk for a specific city.
    *
-   * @param weather The Weather entity to be created.
-   * @return ResponseEntity indicating the success or failure of the operation.
+   * @param weathers The list of Weather objects to be created.
+   * @param city     The city for which the weather records are created.
+   * @return A ResponseEntity indicating the success or failure of the operation.
+   *         Returns an OK response if the weathers were saved successfully.
+   * @throws HttpClientErrorException If an error occurs during the creation process,
+   *                                  it throws a HttpClientErrorException
+   *                                  with a status of BAD_REQUEST
+   *                                  and an error message indicating the cause of the failure.
    */
-  @PostMapping
-  public ResponseEntity<String> weatherResponse(@RequestBody Weather weather) {
-    log.info("post endpoint /weather was called");
-    try {
-      weatherService.weatherResponse(weather);
-      log.info("weather was created successfully");
-      return ResponseEntity.ok("Weather was saved successfully!");
-    } catch (Exception e) {
-      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
-    }
-  }
-
+  @CrossOrigin
   @PostMapping("/bulk/{city}")
   public ResponseEntity<String> createWeathersBulk(@RequestBody List<Weather> weathers,
                                                    @PathVariable("city") String city) {
@@ -92,7 +93,27 @@ public class WeatherController {
     try {
       weatherService.createWeatherBulk(weathers, city);
       log.info("weather was created successfully");
-      return ResponseEntity.ok("Weathers was saved successfully!");
+      return ResponseEntity.ok("Weathers was saved successfully");
+    } catch (Exception e) {
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+  }
+
+  /**
+   * Handles the creation of weather data.
+   *
+   * @param weather The Weather entity to be created.
+   * @return ResponseEntity indicating the success or failure of the operation.
+   */
+  @CrossOrigin
+  @PostMapping("/add")
+  public ResponseEntity<String> weatherResponse(@RequestBody Weather weather) {
+    log.info("post endpoint /weather was called");
+    requestCounterService.increment();
+    try {
+      weatherService.weatherResponse(weather);
+      log.info("weather was created successfully");
+      return ResponseEntity.ok("Weather was saved successfully");
     } catch (Exception e) {
       throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
@@ -104,15 +125,17 @@ public class WeatherController {
    * @param city The name of the city for which weather information is requested.
    * @return ResponseEntity containing the weather information.
    */
+  @CrossOrigin
   @GetMapping("/db/{city}")
   public ResponseEntity getWeatherDb(@PathVariable String city) {
     log.info("get endpoint /db/{city} was called");
+    requestCounterService.increment();
     try {
       if (cache.containsKey(city)) {
         return ResponseEntity.ok(cache.get(city));
       }
       cache.put(city, weatherService.getWeather(city));
-      log.info("weather information retrieved successfully.");
+      log.info(GETTING_SUCCESS);
       return ResponseEntity.ok(weatherService.getWeather(city));
     } catch (CityNotFoundException e) {
       throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -127,15 +150,17 @@ public class WeatherController {
    * @param cityName The name of the city for which weather information is requested.
    * @return ResponseEntity containing the weather information.
    */
+  @CrossOrigin
   @GetMapping("/useful")
   public ResponseEntity getWeatherQueryDb(@RequestParam("cityName") String cityName) {
     log.info("get endpoint /useful was called");
+    requestCounterService.increment();
     try {
       if (cache.containsKey(cityName)) {
         return ResponseEntity.ok(cache.get(cityName));
       }
       cache.put(cityName, weatherService.getWeatherDb(cityName));
-      log.info("weather information retrieved successfully.");
+      log.info(GETTING_SUCCESS);
       return ResponseEntity.ok(cache.get(cityName));
     } catch (CityNotFoundException e) {
       throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -151,9 +176,11 @@ public class WeatherController {
    * @param cityName The name of the city for which weather information is requested.
    * @return ResponseEntity containing the weather information.
    */
-  @GetMapping("/city")
-  public ResponseEntity getWeather(@RequestParam String cityName) {
+  @CrossOrigin
+  @GetMapping("/city/{cityName}")
+  public ResponseEntity getWeather(@PathVariable String cityName) {
     log.info("get endpoint /city was called");
+    requestCounterService.increment();
     try {
       String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + cityName;
       Weather weatherEntity = weatherService.processApiUrl(apiUrl);
@@ -172,7 +199,7 @@ public class WeatherController {
 
       cache.put(cityName, city.getWeatherList().stream().map(WeatherDto::toModel).toList());
       weatherService.weatherResponse(weatherEntity);
-      log.info("weather information retrieved successfully.");
+      log.info(GETTING_SUCCESS);
       return ResponseEntity.ok(WeatherDto.toModel(weatherEntity));
     } catch (Exception e) {
       throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -185,13 +212,15 @@ public class WeatherController {
    * @param id The ID of the weather entity to be deleted.
    * @return ResponseEntity indicating the success or failure of the deletion.
    */
+  @CrossOrigin
   @DeleteMapping("/del/{id}")
   public ResponseEntity<String> deleteWeather(@PathVariable Long id) {
     log.info("delete endpoint /del/{id} was called");
+    requestCounterService.increment();
     try {
       weatherService.delete(id);
       log.info("Weather with ID {} deleted successfully!", id);
-      return ResponseEntity.ok("Deleted successfully!");
+      return ResponseEntity.ok("Deleted successfully");
     } catch (IdNotFoundException e) {
       throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     } catch (Exception e) {
@@ -206,15 +235,24 @@ public class WeatherController {
    * @param weather The updated Weather entity.
    * @return ResponseEntity indicating the success or failure of the update.
    */
-  @PutMapping("/update/id/")
-  public ResponseEntity<String> updateWeather(@RequestParam Long id, @RequestBody Weather weather) {
-    log.info("delete endpoint /del/{id} was called");
+  @CrossOrigin
+  @PutMapping("/update/id/{id}")
+  public ResponseEntity<String> updateWeather(@PathVariable Long id, @RequestBody Weather weather) {
+    log.info("update endpoint /update/{id} was called");
+    requestCounterService.increment();
     try {
       weatherService.complete(id, weather);
       log.info("weather with ID {} updated successfully", id);
-      return ResponseEntity.ok("Updated successfully!");
+      return ResponseEntity.ok("Updated successfully");
     } catch (Exception e) {
       throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
+  }
+
+  @CrossOrigin
+  @GetMapping("/getRequestCount")
+  public String getRequestCount() {
+    int requestCount = requestCounterService.getCount();
+    return "Total number of requests: " + requestCount;
   }
 }

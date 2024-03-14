@@ -26,7 +26,8 @@ public class WeatherExceptionHandler {
   @ExceptionHandler({RuntimeException.class})
   public ResponseEntity<Object> handleRuntimeException(RuntimeException ex, WebRequest request) {
     log.error("500 Internal Server Error - {}", ex.getMessage());
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("500: Internal Server Error");
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("500: Internal Server Error");
   }
 
   /**
@@ -36,13 +37,15 @@ public class WeatherExceptionHandler {
    * @return ResponseEntity with a status of BAD_REQUEST and the exception message.
    */
   @ExceptionHandler({HttpClientErrorException.class})
-  public ResponseEntity<Object> handleHttpClientErrorException(HttpClientErrorException ex, WebRequest request) {
+  public ResponseEntity<Object> handleHttpClientErrorException(HttpClientErrorException ex,
+                                                               WebRequest request) {
     log.warn("400 Bad Request - {}",  ex.getStatusText());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("400: Bad Request");
   }
 
   @ExceptionHandler({NoResourceFoundException.class})
-  public ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, WebRequest request) {
+  public ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex,
+                                                               WebRequest request) {
     log.warn("404 Not Found - {}", ex.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404: Not Found");
   }

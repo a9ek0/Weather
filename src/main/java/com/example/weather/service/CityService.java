@@ -1,11 +1,15 @@
 package com.example.weather.service;
 
+import com.example.weather.controller.CityController;
 import com.example.weather.dto.CityDto;
 import com.example.weather.entity.City;
+import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.CityRepo;
 import com.example.weather.repository.WeatherRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -41,23 +45,25 @@ public class CityService {
    * @return The CityDto corresponding to the ID.
    * @throws UserNotFoundException If the City entity is not found.
    */
-  public CityDto getCity(Long id) throws UserNotFoundException {
+  public CityDto getCity(Long id) throws CityNotFoundException {
     City city = cityRepo.findById(id).get();
     if (city == null) {
-      throw new UserNotFoundException("user not found");
+      throw new CityNotFoundException("city not found");
     }
+    Logger log = LoggerFactory.getLogger(CityController.class);
+    log.info("city with ID {} retrieved successfully", id);
     return CityDto.toModel(city);
   }
 
   /**
    * Finds a City entity by its ID.
    *
-   * @param userId The ID of the City entity.
+   * @param cityId The ID of the City entity.
    * @return The City entity if found, or null if not found.
    */
-  public City findCityById(Long userId) {
-    if (userId != null) {
-      return cityRepo.findById(userId).get();
+  public City findCityById(Long cityId) {
+    if (cityId != null) {
+      return cityRepo.findById(cityId).get();
     }
     return null;
   }
@@ -87,6 +93,8 @@ public class CityService {
       throw new IdNotFoundException("city with such id not found");
     }
     cityRepo.deleteById(id);
+    Logger log = LoggerFactory.getLogger(CityController.class);
+    log.info("city with ID {} deleted successfully", id);
     return id;
   }
 

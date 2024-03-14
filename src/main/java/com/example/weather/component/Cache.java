@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Cache<K, V> {
-  private static final int MAX_ENTRIES = 10;
+  private static final int MAX_ENTRIES = 100;
 
   private final Map<K, V> weatherCache = new LinkedHashMap<>(MAX_ENTRIES, 0.75f, true) {
     @Override

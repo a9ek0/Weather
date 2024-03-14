@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,18 +26,20 @@ import org.springframework.web.client.RestTemplate;
 public class WeatherService {
 
   private final ObjectMapper objectMapper;
-
+  private static final String CITY_NOT_FOUND = "City not found";
   final CityRepo cityRepo;
   private final WeatherRepository weatherRepository;
 
   /**
    * Constructor for the WeatherService class.
    *
-   * @param objectMapper ObjectMapper for handling JSON.
-   * @param weatherRepository  Weather repository for data access.
+   * @param objectMapper      ObjectMapper for handling JSON.
+   * @param weatherRepository Weather repository for data access.
    */
   @Autowired
-  public WeatherService(ObjectMapper objectMapper, WeatherRepository weatherRepository, CityRepo cityRepo) {
+  public WeatherService(ObjectMapper objectMapper,
+                        WeatherRepository weatherRepository,
+                        CityRepo cityRepo) {
     this.objectMapper = objectMapper;
     this.weatherRepository = weatherRepository;
     this.cityRepo = cityRepo;
@@ -78,7 +81,7 @@ public class WeatherService {
     List<Weather> weathers = weatherRepository.findByCityName(city);
 
     if (weathers.isEmpty()) {
-      throw new CityNotFoundException("city not found");
+      throw new CityNotFoundException(CITY_NOT_FOUND);
     }
 
     return weathers.stream().map(WeatherDto::toModel).toList();
@@ -95,7 +98,7 @@ public class WeatherService {
     List<Weather> weathers = weatherRepository.findWeatherByCityName(city);
 
     if (weathers.isEmpty()) {
-      throw new CityNotFoundException("city not found");
+      throw new CityNotFoundException(CITY_NOT_FOUND);
     }
 
     return weathers.stream().map(WeatherDto::toModel).toList();
@@ -173,37 +176,66 @@ public class WeatherService {
   /**
    * Updates a Weather object with the specified ID.
    *
-   * @param id            ID of the Weather object to be updated.
+   * @param id             ID of the Weather object to be updated.
    * @param updatedWeather Updated Weather object.
    * @return Updated WeatherDto object.
    */
   public WeatherDto complete(Long id, Weather updatedWeather) {
     Weather weather = weatherRepository.findById(id).get();
 
-    weather.setCountryCode(updatedWeather.getCountryCode());
+    if (updatedWeather.getCountryCode() != null) {
+      weather.setCountryCode(updatedWeather.getCountryCode());
+    }
     weather.setTemp(updatedWeather.getTemp());
     weather.setRh(updatedWeather.getRh());
-    weather.setDateTime(updatedWeather.getDateTime());
-    weather.setDescription(updatedWeather.getDescription());
-    weather.setCityName(updatedWeather.getCityName());
-    weather.setUserList(updatedWeather.getUserList());
+    if (updatedWeather.getDateTime() != null) {
+      weather.setDateTime(updatedWeather.getDateTime());
+    }
+    if (updatedWeather.getDescription() != null) {
+      weather.setDescription(updatedWeather.getDescription());
+    }
+    if (updatedWeather.getCityName() != null) {
+      weather.setCityName(updatedWeather.getCityName());
+    }
+    if (updatedWeather.getUserList() != null) {
+      weather.setUserList(updatedWeather.getUserList());
+    }
 
     return WeatherDto.toModel(weatherRepository.save(weather));
   }
 
-  public Weather createWeather(Weather weather, String cityName) throws WeatherNotFoundException, CityNotFoundException {
+  /**
+   * Creates a new weather record for the specified city.
+   *
+   * @param weather   The Weather object to be created.
+   * @param cityName  The name of the city for which the weather record is created.
+   * @return          The newly created Weather object.
+   * @throws WeatherNotFoundException If the provided Weather object is null.
+   * @throws CityNotFoundException    If the specified city does not exist in the database.
+   */
+  public Weather createWeather(Weather weather, String cityName) throws WeatherNotFoundException,
+                                                                        CityNotFoundException {
     if (weather == null) {
       throw new WeatherNotFoundException("weather not found");
     }
     City city = cityRepo.findByName(cityName);
-    if(city != null) {
+    if (city != null) {
       weather.setCity(city);
       return weatherRepository.save(weather);
     } else {
-      throw new CityNotFoundException("city not found");
+      throw new CityNotFoundException(CITY_NOT_FOUND);
     }
   }
 
+  /**
+   * Creates multiple weather records in bulk for the specified city.
+   *
+   * @param weatherList The list of Weather objects to be created in bulk.
+   * @param cityName    The name of the city for which the weather records are created.
+   * @throws Exception If any errors occur during the bulk creation process.
+   *                   This could include WeatherNotFoundException
+   *                   or CityNotFoundException for individual weather records.
+   */
   public void createWeatherBulk(List<Weather> weatherList, String cityName) throws Exception {
     if (weatherList == null || weatherList.isEmpty()) {
       throw new WeatherNotFoundException("weather not found");
@@ -218,7 +250,7 @@ public class WeatherService {
                 return "Error creating weather: " + e.getMessage();
               }
             })
-            .filter(error -> error != null)
+            .filter(Objects::nonNull)
             .toList();
 
     if (!errors.isEmpty()) {
