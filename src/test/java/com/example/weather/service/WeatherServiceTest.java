@@ -46,7 +46,7 @@ class WeatherServiceTest {
   private RestTemplate restTemplate;
 
   @Test
-  void testComplete_ValidData() {
+  void testComplete_ValidData() throws WeatherNotFoundException {
     Long id = 1L;
     Weather updatedWeather = new Weather();
     updatedWeather.setCountryCode("US");

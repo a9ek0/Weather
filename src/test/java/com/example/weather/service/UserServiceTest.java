@@ -52,7 +52,7 @@ class UserServiceTest {
   }
 
   @Test
-  void testFindUserById_ExistingId() {
+  void testFindUserById_ExistingId() throws UserNotFoundException {
     long id = 1L;
     User user = new User();
     when(userRepository.findById(id)).thenReturn(Optional.of(user));
@@ -98,7 +98,7 @@ class UserServiceTest {
   }
 
   @Test
-  void testComplete_ValidId() {
+  void testComplete_ValidId() throws UserNotFoundException {
     long id = 1L;
     User existingUser = new User();
     existingUser.setId(id);

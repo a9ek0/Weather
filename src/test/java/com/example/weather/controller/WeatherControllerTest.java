@@ -4,6 +4,7 @@ import com.example.weather.dto.WeatherDto;
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
+import com.example.weather.exception.WeatherNotFoundException;
 import com.example.weather.service.RequestCounterService;
 import com.example.weather.service.WeatherService;
 import org.junit.jupiter.api.Test;
@@ -107,7 +108,7 @@ class WeatherControllerTest {
   }
 
   @Test
-  void testUpdateWeather_Success() {
+  void testUpdateWeather_Success() throws WeatherNotFoundException {
     Long id = 1L;
     Weather updatedWeather = new Weather();
 
@@ -118,7 +119,7 @@ class WeatherControllerTest {
   }
 
   @Test
-  void testUpdateWeather_InternalServerError() {
+  void testUpdateWeather_InternalServerError() throws WeatherNotFoundException {
     Long id = 1L;
     Weather updatedWeather = new Weather();
     doThrow(new RuntimeException("Test Exception")).when(weatherService).complete(id, updatedWeather);

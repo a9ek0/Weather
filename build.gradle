@@ -68,6 +68,8 @@ sonar {
         property "sonar.projectKey", "a9ek0_Weather"
         property "sonar.organization", "a9ek0"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.token", System.getenv("SONAR_SECRET")
     }
 }
+
 

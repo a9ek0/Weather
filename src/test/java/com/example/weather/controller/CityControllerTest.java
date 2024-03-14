@@ -153,7 +153,7 @@ class CityControllerTest {
   }
 
   @Test
-  void testUpdateCity_Success() {
+  void testUpdateCity_Success() throws CityNotFoundException {
     Long id = 1L;
     City city = new City();
 
@@ -170,7 +170,7 @@ class CityControllerTest {
   }
 
   @Test
-  void testUpdateCity_CityAlreadyExists() {
+  void testUpdateCity_CityAlreadyExists() throws CityNotFoundException {
     Long id = 1L;
     City city = new City();
     city.setName("ExistingCity");
@@ -186,7 +186,7 @@ class CityControllerTest {
   }
 
   @Test
-  void testUpdateCity_InternalServerError() {
+  void testUpdateCity_InternalServerError() throws CityNotFoundException {
     Long id = 1L;
     City city = new City();
 

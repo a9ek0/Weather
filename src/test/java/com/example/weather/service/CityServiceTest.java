@@ -54,7 +54,7 @@ class CityServiceTest {
   }
 
   @Test
-  void testFindCityById_ValidId() {
+  void testFindCityById_ValidId() throws CityNotFoundException {
     long id = 1L;
     City expectedCity = new City();
     when(cityRepo.findById(id)).thenReturn(Optional.of(expectedCity));
@@ -66,7 +66,7 @@ class CityServiceTest {
   }
 
   @Test
-  void testFindCityById_NullId() {
+  void testFindCityById_NullId() throws CityNotFoundException {
     assertNull(cityService.findCityById(null));
   }
 
@@ -110,7 +110,7 @@ class CityServiceTest {
   }
 
   @Test
-  void testComplete_ValidId() {
+  void testComplete_ValidId() throws CityNotFoundException {
     long id = 1L;
     City existingCity = new City();
     existingCity.setId(id);

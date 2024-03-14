@@ -186,7 +186,7 @@ class UserControllerTest {
   }
 
   @Test
-  void testUpdateWeather_Success() {
+  void testUpdateWeather_Success() throws UserNotFoundException {
     Long userId = 1L;
     User updatedUser = new User();
 
@@ -197,7 +197,7 @@ class UserControllerTest {
   }
 
   @Test
-  void testUpdateWeather_InternalServerError() {
+  void testUpdateWeather_InternalServerError() throws UserNotFoundException {
     Long userId = 1L;
     User updatedUser = new User();
 
