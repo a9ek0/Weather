@@ -127,7 +127,7 @@ public class WeatherController {
    */
   @CrossOrigin
   @GetMapping("/db/{city}")
-  public ResponseEntity getWeatherDb(@PathVariable String city) {
+  public ResponseEntity<List<WeatherDto>> getWeatherDb(@PathVariable String city) {
     log.info("get endpoint /db/{city} was called");
     requestCounterService.increment();
     try {
@@ -152,7 +152,7 @@ public class WeatherController {
    */
   @CrossOrigin
   @GetMapping("/useful")
-  public ResponseEntity getWeatherQueryDb(@RequestParam("cityName") String cityName) {
+  public ResponseEntity<List<WeatherDto>> getWeatherQueryDb(@RequestParam("cityName") String cityName) {
     log.info("get endpoint /useful was called");
     requestCounterService.increment();
     try {
@@ -178,7 +178,7 @@ public class WeatherController {
    */
   @CrossOrigin
   @GetMapping("/city/{cityName}")
-  public ResponseEntity getWeather(@PathVariable String cityName) {
+  public ResponseEntity<WeatherDto> getWeather(@PathVariable String cityName) {
     log.info("get endpoint /city was called");
     requestCounterService.increment();
     try {

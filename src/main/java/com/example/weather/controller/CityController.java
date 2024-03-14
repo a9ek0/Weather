@@ -1,5 +1,6 @@
 package com.example.weather.controller;
 
+import com.example.weather.dto.CityDto;
 import com.example.weather.entity.City;
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.CityNotFoundException;
@@ -77,7 +78,7 @@ public class CityController {
       }
 
       cityService.cityResponse(city);
-      log.info("city {} was saved successfully", city.getName());
+      log.info("city was saved successfully");
       return ResponseEntity.ok("City was saved successfully");
     } catch (Exception e) {
       throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -92,7 +93,7 @@ public class CityController {
    */
   @GetMapping("/id/{id}")
   @CrossOrigin
-  public ResponseEntity getCity(@PathVariable Long id) {
+  public ResponseEntity<CityDto> getCity(@PathVariable Long id) {
     log.info("get endpoint /id/{id} was called");
     requestCounterService.increment();
     try {

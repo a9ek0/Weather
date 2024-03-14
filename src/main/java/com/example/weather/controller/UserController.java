@@ -1,5 +1,6 @@
 package com.example.weather.controller;
 
+import com.example.weather.dto.UserDto;
 import com.example.weather.entity.User;
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.IdNotFoundException;
@@ -108,7 +109,7 @@ public class UserController {
    */
   @GetMapping("/id/{id}")
   @CrossOrigin
-  public ResponseEntity getUser(@PathVariable Long id) {
+  public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
     log.info("get endpoint /id/{id} was called");
     requestCounterService.increment();
     try {

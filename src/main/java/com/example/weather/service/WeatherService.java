@@ -3,6 +3,7 @@ package com.example.weather.service;
 import com.example.weather.dto.WeatherDto;
 import com.example.weather.entity.City;
 import com.example.weather.entity.Weather;
+import com.example.weather.exception.BulkCreationException;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.JsonReadingException;
@@ -12,12 +13,13 @@ import com.example.weather.repository.WeatherRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * Service class for handling Weather-related operations.
@@ -207,14 +209,14 @@ public class WeatherService {
   /**
    * Creates a new weather record for the specified city.
    *
-   * @param weather   The Weather object to be created.
-   * @param cityName  The name of the city for which the weather record is created.
-   * @return          The newly created Weather object.
+   * @param weather  The Weather object to be created.
+   * @param cityName The name of the city for which the weather record is created.
+   * @return The newly created Weather object.
    * @throws WeatherNotFoundException If the provided Weather object is null.
    * @throws CityNotFoundException    If the specified city does not exist in the database.
    */
   public Weather createWeather(Weather weather, String cityName) throws WeatherNotFoundException,
-                                                                        CityNotFoundException {
+          CityNotFoundException {
     if (weather == null) {
       throw new WeatherNotFoundException("weather not found");
     }
@@ -232,11 +234,12 @@ public class WeatherService {
    *
    * @param weatherList The list of Weather objects to be created in bulk.
    * @param cityName    The name of the city for which the weather records are created.
-   * @throws Exception If any errors occur during the bulk creation process.
-   *                   This could include WeatherNotFoundException
-   *                   or CityNotFoundException for individual weather records.
+   * @throws BulkCreationException If any errors occur
+   *                               during the bulk creation process.
+   *                               This could include WeatherNotFoundException
+   *                               or CityNotFoundException for individual weather records.
    */
-  public void createWeatherBulk(List<Weather> weatherList, String cityName) throws Exception {
+  public void createWeatherBulk(List<Weather> weatherList, String cityName) throws BulkCreationException, WeatherNotFoundException {
     if (weatherList == null || weatherList.isEmpty()) {
       throw new WeatherNotFoundException("weather not found");
     }
@@ -254,7 +257,7 @@ public class WeatherService {
             .toList();
 
     if (!errors.isEmpty()) {
-      throw new Exception("Errors occurred during bulk creation:\n" + String.join("\n", errors));
+      throw new BulkCreationException("Errors occurred during bulk creation:\n" + String.join("\n", errors));
     }
   }
 
