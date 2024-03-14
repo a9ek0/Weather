@@ -45,7 +45,7 @@ public class CityService {
    *
    * @param id The ID of the City entity.
    * @return The CityDto corresponding to the ID.
-   * @throws UserNotFoundException If the City entity is not found.
+   * @throws CityNotFoundException If the City entity is not found.
    */
   public CityDto getCity(Long id) throws CityNotFoundException {
     Optional<City> optionalCity = cityRepo.findById(id);
