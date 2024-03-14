@@ -5,7 +5,6 @@ import com.example.weather.dto.CityDto;
 import com.example.weather.entity.City;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
-import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.CityRepo;
 import com.example.weather.repository.WeatherRepository;
 import org.slf4j.Logger;
