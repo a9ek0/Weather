@@ -8,7 +8,6 @@ import com.example.weather.exception.UserNotFoundException;
 import com.example.weather.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +18,7 @@ public class UserService {
 
   private final UserRepository userRepository;
   static final String USER_NOT_FOUND = "User not found";
+
   public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }

@@ -8,19 +8,18 @@ import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
 import com.example.weather.exception.JsonReadingException;
 import com.example.weather.exception.WeatherNotFoundException;
-import com.example.weather.repository.CityRepo;
+import com.example.weather.repository.CityRepository;
 import com.example.weather.repository.WeatherRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Service class for handling Weather-related operations.
@@ -30,7 +29,7 @@ public class WeatherService {
 
   private final ObjectMapper objectMapper;
   private static final String CITY_NOT_FOUND = "City not found";
-  final CityRepo cityRepo;
+  final CityRepository cityRepository;
   private final WeatherRepository weatherRepository;
 
   /**
@@ -42,10 +41,10 @@ public class WeatherService {
   @Autowired
   public WeatherService(ObjectMapper objectMapper,
                         WeatherRepository weatherRepository,
-                        CityRepo cityRepo) {
+                        CityRepository cityRepository) {
     this.objectMapper = objectMapper;
     this.weatherRepository = weatherRepository;
-    this.cityRepo = cityRepo;
+    this.cityRepository = cityRepository;
   }
 
   /**
@@ -67,7 +66,8 @@ public class WeatherService {
    */
   public WeatherDto getWeather(Long id) throws WeatherNotFoundException {
     Optional<Weather> optionalWeather = weatherRepository.findById(id);
-    Weather weather = optionalWeather.orElseThrow(() -> new WeatherNotFoundException("Weather not found"));
+    Weather weather = optionalWeather.orElseThrow(() ->
+            new WeatherNotFoundException("Weather not found"));
 
     if (weather == null) {
       throw new WeatherNotFoundException("Weather not found!");
@@ -187,7 +187,8 @@ public class WeatherService {
    */
   public WeatherDto complete(Long id, Weather updatedWeather) throws WeatherNotFoundException {
     Optional<Weather> optionalWeather = weatherRepository.findById(id);
-    Weather weather = optionalWeather.orElseThrow(() -> new WeatherNotFoundException("Weather not found"));
+    Weather weather = optionalWeather.orElseThrow(() ->
+            new WeatherNotFoundException("Weather not found"));
 
 
     if (updatedWeather.getCountryCode() != null) {
@@ -225,7 +226,7 @@ public class WeatherService {
     if (weather == null) {
       throw new WeatherNotFoundException("weather not found");
     }
-    City city = cityRepo.findByName(cityName);
+    City city = cityRepository.findByName(cityName);
     if (city != null) {
       weather.setCity(city);
       return weatherRepository.save(weather);
@@ -242,9 +243,11 @@ public class WeatherService {
    * @throws BulkCreationException If any errors occur
    *                               during the bulk creation process.
    *                               This could include WeatherNotFoundException
-   *                               or CityNotFoundException for individual weather records.
+   *                               or CityNotFoundException for individual
+   *                               weather records.
    */
-  public void createWeatherBulk(List<Weather> weatherList, String cityName) throws BulkCreationException, WeatherNotFoundException {
+  public void createWeatherBulk(List<Weather> weatherList, String cityName)
+          throws BulkCreationException, WeatherNotFoundException {
     if (weatherList == null || weatherList.isEmpty()) {
       throw new WeatherNotFoundException("weather not found");
     }
@@ -262,7 +265,8 @@ public class WeatherService {
             .toList();
 
     if (!errors.isEmpty()) {
-      throw new BulkCreationException("Errors occurred during bulk creation:\n" + String.join("\n", errors));
+      throw new BulkCreationException("Errors occurred during bulk creation:\n"
+                                      + String.join("\n", errors));
     }
   }
 

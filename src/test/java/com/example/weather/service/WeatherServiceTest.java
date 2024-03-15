@@ -5,12 +5,10 @@ import com.example.weather.entity.City;
 import com.example.weather.entity.Weather;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
-import com.example.weather.exception.JsonReadingException;
 import com.example.weather.exception.WeatherNotFoundException;
-import com.example.weather.repository.CityRepo;
+import com.example.weather.repository.CityRepository;
 import com.example.weather.repository.WeatherRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +36,7 @@ class WeatherServiceTest {
   private WeatherRepository weatherRepository;
 
   @Mock
-  private CityRepo cityRepo;
+  private CityRepository cityRepository;
 
   @InjectMocks
   private WeatherService weatherService;
@@ -132,7 +130,7 @@ class WeatherServiceTest {
     Weather weather = new Weather();
     String cityName = "TestCity";
     City city = new City();
-    when(cityRepo.findByName(cityName)).thenReturn(city);
+    when(cityRepository.findByName(cityName)).thenReturn(city);
     when(weatherRepository.save(weather)).thenReturn(weather);
 
     Weather result = weatherService.createWeather(weather, cityName);
@@ -150,7 +148,7 @@ class WeatherServiceTest {
   void testCreateWeather_NoSuchCity() {
     Weather weather = new Weather();
     String cityName = "NonExistingCity";
-    when(cityRepo.findByName(cityName)).thenReturn(null);
+    when(cityRepository.findByName(cityName)).thenReturn(null);
 
     CityNotFoundException exception = assertThrows(CityNotFoundException.class,
             () -> weatherService.createWeather(weather, cityName));
@@ -163,7 +161,7 @@ class WeatherServiceTest {
     weatherList.add(new Weather());
     String cityName = "TestCity";
     City city = new City();
-    when(cityRepo.findByName(cityName)).thenReturn(city);
+    when(cityRepository.findByName(cityName)).thenReturn(city);
     when(weatherRepository.save(any())).thenReturn(new Weather());
 
     assertDoesNotThrow(() -> weatherService.createWeatherBulk(weatherList, cityName));
@@ -185,7 +183,7 @@ class WeatherServiceTest {
     weatherList.add(new Weather());
     String cityName = "TestCity";
     City city = new City();
-    when(cityRepo.findByName(cityName)).thenReturn(city);
+    when(cityRepository.findByName(cityName)).thenReturn(city);
     when(weatherRepository.save(any())).thenThrow(new RuntimeException("Error"));
 
     Exception exception = assertThrows(Exception.class,

@@ -4,8 +4,7 @@ import com.example.weather.dto.CityDto;
 import com.example.weather.entity.City;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
-import com.example.weather.exception.UserNotFoundException;
-import com.example.weather.repository.CityRepo;
+import com.example.weather.repository.CityRepository;
 import com.example.weather.repository.WeatherRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.*;
 class CityServiceTest {
 
   @Mock
-  private CityRepo cityRepo;
+  private CityRepository cityRepository;
 
   @Mock
   private WeatherRepository weatherRepository;
@@ -34,7 +33,7 @@ class CityServiceTest {
   @Test
   void testCityResponse() {
     City city = new City();
-    when(cityRepo.save(city)).thenReturn(city);
+    when(cityRepository.save(city)).thenReturn(city);
 
     City result = cityService.cityResponse(city);
 
@@ -46,7 +45,7 @@ class CityServiceTest {
   void testGetCityById_ExistingId() throws CityNotFoundException {
     long id = 1L;
     City city = new City();
-    when(cityRepo.findById(id)).thenReturn(Optional.of(city));
+    when(cityRepository.findById(id)).thenReturn(Optional.of(city));
 
     CityDto result = cityService.getCity(id);
 
@@ -57,7 +56,7 @@ class CityServiceTest {
   void testFindCityById_ValidId() throws CityNotFoundException {
     long id = 1L;
     City expectedCity = new City();
-    when(cityRepo.findById(id)).thenReturn(Optional.of(expectedCity));
+    when(cityRepository.findById(id)).thenReturn(Optional.of(expectedCity));
 
     City result = cityService.findCityById(id);
 
@@ -74,7 +73,7 @@ class CityServiceTest {
   void testFindCityByCityName_ValidName() {
     String name = "TestCity";
     City expectedCity = new City();
-    when(cityRepo.findByName(name)).thenReturn(expectedCity);
+    when(cityRepository.findByName(name)).thenReturn(expectedCity);
 
     City result = cityService.findCityByCityName(name);
 
@@ -90,23 +89,23 @@ class CityServiceTest {
   @Test
   void testDelete_ValidId() throws IdNotFoundException {
     long id = 1L;
-    when(cityRepo.findById(id)).thenReturn(Optional.empty());
+    when(cityRepository.findById(id)).thenReturn(Optional.empty());
 
     IdNotFoundException exception = assertThrows(IdNotFoundException.class,
             () -> cityService.delete(id));
     assertEquals("city with such id not found", exception.getMessage());
 
-    verify(cityRepo, never()).deleteById(id);
+    verify(cityRepository, never()).deleteById(id);
   }
 
   @Test
   void testDelete_InvalidId() throws IdNotFoundException {
     long id = 1L;
-    when(cityRepo.findById(id)).thenReturn(Optional.of(new City()));
+    when(cityRepository.findById(id)).thenReturn(Optional.of(new City()));
 
     cityService.delete(id);
 
-    verify(cityRepo, times(1)).deleteById(id);
+    verify(cityRepository, times(1)).deleteById(id);
   }
 
   @Test
@@ -116,8 +115,8 @@ class CityServiceTest {
     existingCity.setId(id);
     City updatedCity = new City();
     updatedCity.setId(id);
-    when(cityRepo.findById(id)).thenReturn(Optional.of(existingCity));
-    when(cityRepo.save(any())).thenReturn(updatedCity);
+    when(cityRepository.findById(id)).thenReturn(Optional.of(existingCity));
+    when(cityRepository.save(any())).thenReturn(updatedCity);
 
     CityDto result = cityService.complete(id, updatedCity);
 

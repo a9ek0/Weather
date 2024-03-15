@@ -5,13 +5,12 @@ import com.example.weather.dto.CityDto;
 import com.example.weather.entity.City;
 import com.example.weather.exception.CityNotFoundException;
 import com.example.weather.exception.IdNotFoundException;
-import com.example.weather.repository.CityRepo;
+import com.example.weather.repository.CityRepository;
 import com.example.weather.repository.WeatherRepository;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * Service class for managing City entities.
@@ -20,12 +19,12 @@ import java.util.Optional;
 @Service
 public class CityService {
 
-  final CityRepo cityRepo;
+  final CityRepository cityRepository;
   static final String CITY_NOT_FOUND = "City not found";
   final WeatherRepository weatherRepository;
 
-  public CityService(CityRepo cityRepo, WeatherRepository weatherRepository) {
-    this.cityRepo = cityRepo;
+  public CityService(CityRepository cityRepository, WeatherRepository weatherRepository) {
+    this.cityRepository = cityRepository;
     this.weatherRepository = weatherRepository;
   }
 
@@ -36,7 +35,7 @@ public class CityService {
    * @return The saved City entity.
    */
   public City cityResponse(City city) {
-    return cityRepo.save(city);
+    return cityRepository.save(city);
   }
 
   /**
@@ -47,7 +46,7 @@ public class CityService {
    * @throws CityNotFoundException If the City entity is not found.
    */
   public CityDto getCity(Long id) throws CityNotFoundException {
-    Optional<City> optionalCity = cityRepo.findById(id);
+    Optional<City> optionalCity = cityRepository.findById(id);
     City city = optionalCity.orElseThrow(() -> new CityNotFoundException(CITY_NOT_FOUND));
     if (city == null) {
       throw new CityNotFoundException("city not found");
@@ -65,7 +64,7 @@ public class CityService {
    */
   public City findCityById(Long cityId) throws CityNotFoundException {
     if (cityId != null) {
-      Optional<City> optionalCity = cityRepo.findById(cityId);
+      Optional<City> optionalCity = cityRepository.findById(cityId);
       return optionalCity.orElseThrow(() -> new CityNotFoundException(CITY_NOT_FOUND));
     }
     return null;
@@ -79,7 +78,7 @@ public class CityService {
    */
   public City findCityByCityName(String name) {
     if (name != null) {
-      return cityRepo.findByName(name);
+      return cityRepository.findByName(name);
     }
     return null;
   }
@@ -92,10 +91,10 @@ public class CityService {
    * @throws IdNotFoundException If the City entity with the given ID is not found.
    */
   public Long delete(Long id) throws IdNotFoundException {
-    if (cityRepo.findById(id).isEmpty()) {
+    if (cityRepository.findById(id).isEmpty()) {
       throw new IdNotFoundException("city with such id not found");
     }
-    cityRepo.deleteById(id);
+    cityRepository.deleteById(id);
     Logger log = LoggerFactory.getLogger(CityController.class);
     log.info("city with ID {} deleted successfully", id);
     return id;
@@ -109,13 +108,13 @@ public class CityService {
    * @return The updated CityDto.
    */
   public CityDto complete(Long id, City updatedCity) throws CityNotFoundException {
-    Optional<City> optionalCity = cityRepo.findById(id);
+    Optional<City> optionalCity = cityRepository.findById(id);
     City city = optionalCity.orElseThrow(() -> new CityNotFoundException(CITY_NOT_FOUND));
 
     city.setName(updatedCity.getName());
     if (!updatedCity.getWeatherList().isEmpty()) {
       city.setWeatherList(updatedCity.getWeatherList());
     }
-    return CityDto.toModel(cityRepo.save(city));
+    return CityDto.toModel(cityRepository.save(city));
   }
 }

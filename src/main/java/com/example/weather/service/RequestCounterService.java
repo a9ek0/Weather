@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 public class RequestCounterService {
   private AtomicInteger count = new AtomicInteger(0);
 
-  public int increment() { return count.incrementAndGet(); }
+  public int increment() {
+    return count.incrementAndGet();
+  }
 
   public int getCount() {
     return count.get();

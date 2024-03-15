@@ -39,8 +39,8 @@ public class WeatherController {
 
   @Value("${weatherbit.api-key}")
   private String apiKey;
-  private static final String GETTING_SUCCESS = "weather information " +
-                                                "retrieved successfully";
+  private static final String GETTING_SUCCESS = "weather information "
+                                              + "retrieved successfully";
   private static final Logger log = LoggerFactory.getLogger(WeatherController.class);
   final Cache<String, List<WeatherDto>> cache;
   final RequestCounterService requestCounterService;
@@ -152,7 +152,8 @@ public class WeatherController {
    */
   @CrossOrigin
   @GetMapping("/useful")
-  public ResponseEntity<List<WeatherDto>> getWeatherQueryDb(@RequestParam("cityName") String cityName) {
+  public ResponseEntity<List<WeatherDto>> getWeatherQueryDb(
+          @RequestParam("cityName") String cityName) {
     log.info("get endpoint /useful was called");
     requestCounterService.increment();
     try {

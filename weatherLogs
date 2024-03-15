@@ -1,2 +1,0 @@
-2024-03-11T17:42:31.109+03:00  INFO 86880 --- [http-nio-8080-exec-1] c.e.w.controller.WeatherController       : Processing request for data.
-2024-03-11T17:42:31.215+03:00  INFO 86880 --- [http-nio-8080-exec-1] c.e.w.controller.WeatherController       : Data processing successful.
