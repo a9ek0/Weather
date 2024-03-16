@@ -40,7 +40,7 @@ public class WeatherController {
   @Value("${weatherbit.api-key}")
   private String apiKey;
   private static final String GETTING_SUCCESS = "weather information "
-                                              + "retrieved successfully";
+      + "retrieved successfully";
   private static final Logger log = LoggerFactory.getLogger(WeatherController.class);
   final Cache<String, List<WeatherDto>> cache;
   final RequestCounterService requestCounterService;
@@ -78,7 +78,6 @@ public class WeatherController {
    * @param weathers The list of Weather objects to be created.
    * @param city     The city for which the weather records are created.
    * @return A ResponseEntity indicating the success or failure of the operation.
-   *         Returns an OK response if the weathers were saved successfully.
    * @throws HttpClientErrorException If an error occurs during the creation process,
    *                                  it throws a HttpClientErrorException
    *                                  with a status of BAD_REQUEST
@@ -153,7 +152,7 @@ public class WeatherController {
   @CrossOrigin
   @GetMapping("/useful")
   public ResponseEntity<List<WeatherDto>> getWeatherQueryDb(
-          @RequestParam("cityName") String cityName) {
+      @RequestParam("cityName") String cityName) {
     log.info("get endpoint /useful was called");
     requestCounterService.increment();
     try {
@@ -186,17 +185,22 @@ public class WeatherController {
       String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + cityName;
       Weather weatherEntity = weatherService.processApiUrl(apiUrl);
 
-      City city = cityService.findCityByCityName(cityName);
-      city.getWeatherList().add(weatherEntity);
-      weatherEntity.setCity(city);
-
       List<User> users = userService.getAllUsers(weatherEntity.getCountryCode());
-      for (User user : users) {
-        user.getWeatherList().add(weatherEntity);
-        weatherEntity.getUserList().add(user);
+      if (!users.isEmpty()) {
+        for (User user : users) {
+          user.getWeatherList().add(weatherEntity);
+          weatherEntity.getUserList().add(user);
+        }
       }
 
-      cache.put(cityName, city.getWeatherList().stream().map(WeatherDto::toModel).toList());
+      City city = cityService.findCityByCityName(cityName);
+      if (city != null) {
+        city.getWeatherList().add(weatherEntity);
+        weatherEntity.setCity(city);
+      }
+
+      cache.put(cityName, city != null ? city.getWeatherList().stream().map(WeatherDto::toModel)
+          .toList() : List.of(WeatherDto.toModel(weatherEntity)));
       weatherService.weatherResponse(weatherEntity);
       log.info(GETTING_SUCCESS);
       return ResponseEntity.ok(WeatherDto.toModel(weatherEntity));
