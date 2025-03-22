@@ -182,7 +182,7 @@ public class WeatherController {
     log.info("get endpoint /city was called");
     requestCounterService.increment();
     try {
-      String apiUrl = "https://api.weatherbit.io/v2.0/current?key=" + apiKey + "&include=minutely&City=" + cityName;
+      String apiUrl = "https://api.weatherbit.io/v2.0/current?city=" + cityName + "&key=" + apiKey;
       Weather weatherEntity = weatherService.processApiUrl(apiUrl);
 
       List<User> users = userService.getAllUsers(weatherEntity.getCountryCode());

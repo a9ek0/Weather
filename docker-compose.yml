@@ -1,0 +1,35 @@
+services:
+  weather-api:
+    image: weather-img
+    build: .
+    ports:
+      - 5252:8080
+    networks:
+      - weather-network
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  mysql:
+    image: mysql
+    ports:
+      - 5253:3306
+    environment:
+      MYSQL_DATABASE: weatherDB
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - weather-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-data:
+networks:
+  weather-network:
+    driver: bridge
